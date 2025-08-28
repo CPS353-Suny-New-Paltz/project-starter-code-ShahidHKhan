@@ -21,8 +21,17 @@
     <property name="file" value="${org.checkstyle.google.suppressionfilter.config}"
            default="checkstyle-suppressions.xml" />
     <property name="optional" value="true"/>
+
+            
+  <module name="LineLength">
+    <property name="fileExtensions" value="java"/>
+    <property name="max" value="100"/>
+    <property name="ignorePattern"
+             value="^package.*|^import.*|href\s*=\s*&quot;[^&quot;]*&quot;|http://|https://|ftp://"/>
+  </module>        
   </module>
 
+          
   <module name="TreeWalker">
     <module name="OuterTypeFilename"/>
     <module name="IllegalTokenText">
