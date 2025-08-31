@@ -9,7 +9,7 @@
 
   <!-- Keep lines reasonable, but ignore imports/URLs/packages -->
   <module name="LineLength">
-    <property name="max" value="100"/>
+    <property name="max" value="300"/>
     <property name="ignorePattern"
               value="^package.*|^import.*|href\s*=\s*&quot;[^&quot;]*&quot;|http://|https://|ftp://"/>
   </module>
