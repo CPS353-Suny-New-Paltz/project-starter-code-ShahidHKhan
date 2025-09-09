@@ -1,3 +1,7 @@
 # Software Engineering Project Starter Code
 
-This repo will start you off with an initial configuration that you'll modify as part of Checkpoint 1. As part of the modifications, you'll eventually delete the contents of this README and replace it with documentation for your project.
+The System will find the largest prime number in n (input)
+EX: 10:7 (as 7 is the largest prime in 10)
+
+(https://github.com/<repo ShahidHKhan>/<repo project-starter-code-ShahidHKhan>/blob/main/<path to image
+file>/<name of image file>?raw=true)
