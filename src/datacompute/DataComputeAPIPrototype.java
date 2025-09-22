@@ -6,6 +6,8 @@ import project.annotations.ProcessAPIPrototype;
 
 public class DataComputeAPIPrototype {
 
+	@ProcessAPIPrototype
+
     public void prototype(DataComputeAPI storage) {
     	DataComputeAPI compute = storage;
     	
