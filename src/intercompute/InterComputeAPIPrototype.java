@@ -6,7 +6,9 @@ import project.annotations.ConceptualAPIPrototype;
 
 public class InterComputeAPIPrototype {
 
+
 	@ConceptualAPIPrototype
+
     public void prototype(InterComputeAPI inter) {
     	InterComputeAPI compute = inter;
 

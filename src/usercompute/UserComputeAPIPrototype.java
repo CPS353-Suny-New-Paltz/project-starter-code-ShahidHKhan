@@ -6,6 +6,7 @@ import project.annotations.NetworkAPIPrototype;
 public class UserComputeAPIPrototype {
 
 	@NetworkAPIPrototype
+
     public void prototype(UserComputeAPI user) {
     	UserComputeAPI compute = user;
     	
