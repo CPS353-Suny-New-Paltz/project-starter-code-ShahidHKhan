@@ -1,4 +1,4 @@
-package dataCompute;
+package datacompute;
 
 import java.util.Arrays;
 

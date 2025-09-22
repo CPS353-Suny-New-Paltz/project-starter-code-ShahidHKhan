@@ -1,4 +1,4 @@
-package userCompute;
+package usercompute;
 
 public class UserRequest {
 

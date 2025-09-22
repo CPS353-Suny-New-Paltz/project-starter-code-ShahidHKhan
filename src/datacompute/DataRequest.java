@@ -1,4 +1,4 @@
-package dataCompute;
+package datacompute;
 
 public class DataRequest {
 
