@@ -1,4 +1,4 @@
-package usercompute;
+package project.usercompute;
 
 import project.annotations.NetworkAPI;
 

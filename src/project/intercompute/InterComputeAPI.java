@@ -1,4 +1,4 @@
-package intercompute;
+package project.intercompute;
 
 import project.annotations.ConceptualAPI;
 
