@@ -1,10 +1,9 @@
-package project.intercompute;
+package project.intercompute; 
 
-import project.annotations.ConceptualAPI;
+import project.annotations.ConceptualAPI; 
 
-
-@ConceptualAPI
-
-public interface InterComputeAPI {
-    void insertRequest(InterRequest request);
+@ConceptualAPI 
+public interface InterComputeAPI { 
+	
+	void insertRequest(InterRequest request); 
 }
