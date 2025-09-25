@@ -1,4 +1,4 @@
-package intercompute;
+package project.intercompute;
 
 import java.util.Arrays;
 

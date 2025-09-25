@@ -1,4 +1,4 @@
-package intercompute;
+package project.intercompute;
 
 public class InterRequest {
 
