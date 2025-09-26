@@ -6,4 +6,8 @@ public class UserRequest {
 		// TODO Auto-generated constructor stub
 	}
 
+	public UserRequest(String string, String string2) {
+		// TODO Auto-generated constructor stub
+	}
+
 }
