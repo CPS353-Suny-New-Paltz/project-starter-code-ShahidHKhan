@@ -1,19 +1,12 @@
 package project.intercompute;
 
-import java.util.Arrays;
-
 import project.annotations.ConceptualAPIPrototype;
 
 public class InterComputeAPIPrototype {
-
-
-	@ConceptualAPIPrototype
-
+    @ConceptualAPIPrototype
     public void prototype(InterComputeAPI inter) {
-    	InterComputeAPI compute = inter;
-
-        compute.insertRequest(new InterRequest("Hello from InterCompute".getBytes()));
-
-        compute.insertRequest(new InterRequest(new byte[]{42, 43, 44}));
+        InterComputeAPI compute = inter;
+        compute.processRequest(new InterRequest("Hello from InterCompute".getBytes()));
+        compute.processRequest(new InterRequest(new byte[]{42, 43, 44}));
     }
 }

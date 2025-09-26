@@ -2,16 +2,11 @@ package project.usercompute;
 
 import project.annotations.NetworkAPIPrototype;
 
-
 public class UserComputeAPIPrototype {
-
-	@NetworkAPIPrototype
-
+    @NetworkAPIPrototype
     public void prototype(UserComputeAPI user) {
-    	UserComputeAPI compute = user;
-    	
-        compute.insertRequest(new UserRequest("Hello from UserCompute".getBytes()));
-
-        compute.insertRequest(new UserRequest(new byte[]{10, 20, 30}));
+        UserComputeAPI compute = user;
+        compute.handleRequest(new UserRequest("Hello from UserCompute".getBytes()));
+        compute.handleRequest(new UserRequest(new byte[]{10, 20, 30}));
     }
 }
