@@ -1,6 +1,6 @@
 package project.datacompute;
 
-public class DataComputeAPIimpl implements DataComputeAPI {
+public class DataComputeAPIImpl implements DataComputeAPI {
 
 	@Override
 	public void insertRequest(DataRequest dataRequest) {

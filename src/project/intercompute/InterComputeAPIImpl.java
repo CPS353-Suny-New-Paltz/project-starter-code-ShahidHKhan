@@ -2,7 +2,7 @@ package project.intercompute;
 
 import project.datacompute.DataComputeAPI;
 
-public class InterComputeAPIimpl implements InterComputeAPI {
+public class InterComputeAPIImpl implements InterComputeAPI {
 
 	private project.datacompute.DataComputeAPI data;
 	public void setData( project.datacompute.DataComputeAPI data ) { this.data = data; }

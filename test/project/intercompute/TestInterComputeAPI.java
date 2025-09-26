@@ -1,26 +1,27 @@
 package project.intercompute;
 
 import org.junit.jupiter.api.Test;
-import static org.mockito.Mockito.*;
 
 import project.datacompute.DataComputeAPI;
 import project.datacompute.DataRequest;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.ArgumentMatchers.any;
+
 public class TestInterComputeAPI {
 
     @Test
-    void smoke_processRequest_withMockedDataLayer() {
+    void smokeProcessRequestWithMockedDataLayer() {
         DataComputeAPI mockData = mock(DataComputeAPI.class);
-        // If DataComputeAPI has a boolean return, you can stub it like:
-        // when(mockData.insertRequest(any(DataRequest.class))).thenReturn(true);
 
-        InterComputeAPIimpl inter = new InterComputeAPIimpl();
-        inter.setData(mockData); // requires the simple setter mentioned above
+        InterComputeAPIImpl inter = new InterComputeAPIImpl();
+        inter.setData(mockData);
 
         InterRequest req = new InterRequest(new byte[]{9, 9});
         inter.processRequest(req);
 
-        // Optional: verify the dependency got called
         verify(mockData, atLeastOnce()).insertRequest(any(DataRequest.class));
     }
 }

@@ -1,21 +1,23 @@
 package project.usercompute;
 
 import org.junit.jupiter.api.Test;
-import static org.mockito.Mockito.*;
 
 import project.intercompute.InterComputeAPI;
 import project.intercompute.InterRequest;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.ArgumentMatchers.any;
+
 public class TestUserComputeAPI {
 
     @Test
-    void smoke_handleRequest_withMockedInterLayer() {
+    void smokeHandleRequestWithMockedInterLayer() {
         InterComputeAPI mockInter = mock(InterComputeAPI.class);
-        // If InterComputeAPI returns boolean, you can stub:
-        // when(mockInter.processRequest(any(InterRequest.class))).thenReturn(true);
 
-        UserComputeAPIimpl user = new UserComputeAPIimpl();
-        user.setInter(mockInter); // requires the simple setter mentioned above
+        UserComputeAPIImpl user = new UserComputeAPIImpl();
+        user.setInter(mockInter);
 
         UserRequest req = new UserRequest(new byte[]{9, 9});
         user.handleRequest(req);
