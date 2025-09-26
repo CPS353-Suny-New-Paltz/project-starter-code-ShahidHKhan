@@ -17,7 +17,7 @@ public class TestUserComputeAPI {
         UserComputeAPIimpl user = new UserComputeAPIimpl();
         user.setInter(mockInter); // requires the simple setter mentioned above
 
-        UserRequest req = new UserRequest("u1", "hello");
+        UserRequest req = new UserRequest(new byte[]{9, 9});
         user.handleRequest(req);
 
         verify(mockInter, atLeastOnce()).processRequest(any(InterRequest.class));
