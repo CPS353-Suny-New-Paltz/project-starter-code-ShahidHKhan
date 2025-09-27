@@ -27,13 +27,10 @@ public class ComputeEngineIntegrationTest {
         
         InMemoryDataComputeAPI data = new InMemoryDataComputeAPI(inCfg, outCfg);
        
-        InterComputeAPIImpl inter = new InterComputeAPIImpl();
-        inter.setData(data);
-        
-        UserComputeAPIImpl user = new UserComputeAPIImpl();
-        user.setInter(inter);
-        
-        user.handleRequest(new UserRequest(new byte[] { 0 }));
+        InterComputeAPIImpl inter = new InterComputeAPIImpl(data);
+        UserComputeAPIImpl user = new UserComputeAPIImpl(inter);
+
+        user.handleRequest(new UserRequest(new byte[]{0}));
 
         // expected outp
         List<String> expected = Arrays.asList("1", "10", "25");

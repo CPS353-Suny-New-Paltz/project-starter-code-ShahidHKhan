@@ -1,7 +1,6 @@
 package project.usercompute;
 
 import org.junit.jupiter.api.Test;
-
 import project.intercompute.InterComputeAPI;
 import project.intercompute.InterRequest;
 
@@ -16,13 +15,12 @@ public class TestUserComputeAPI {
     void smokeHandleRequestWithMockedInterLayer() {
         InterComputeAPI mockInter = mock(InterComputeAPI.class);
 
-        UserComputeAPIImpl user = new UserComputeAPIImpl();
-        user.setInter(mockInter);
+        // ctor injection instead of no-arg + setInter
+        UserComputeAPIImpl user = new UserComputeAPIImpl(mockInter);
 
         UserRequest req = new UserRequest(new byte[]{9, 9});
         user.handleRequest(req);
 
-        // Relaxed: allow zero calls while impl is empty
         verify(mockInter, atLeast(0)).processRequest(any(InterRequest.class));
     }
 }

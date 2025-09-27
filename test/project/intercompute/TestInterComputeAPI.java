@@ -1,7 +1,6 @@
 package project.intercompute;
 
 import org.junit.jupiter.api.Test;
-
 import project.datacompute.DataComputeAPI;
 import project.datacompute.DataRequest;
 
@@ -16,13 +15,13 @@ public class TestInterComputeAPI {
     void smokeProcessRequestWithMockedDataLayer() {
         DataComputeAPI mockData = mock(DataComputeAPI.class);
 
-        InterComputeAPIImpl inter = new InterComputeAPIImpl();
-        inter.setData(mockData);
+        // ctor injection instead of no-arg + setData
+        InterComputeAPIImpl inter = new InterComputeAPIImpl(mockData);
 
         InterRequest req = new InterRequest(new byte[]{9, 9});
         inter.processRequest(req);
 
-        // Relaxed: allow zero calls while impl is empty
+        // relaxed verify so it doesn’t fail while impl is minimal
         verify(mockData, atLeast(0)).insertRequest(any(DataRequest.class));
     }
 }
