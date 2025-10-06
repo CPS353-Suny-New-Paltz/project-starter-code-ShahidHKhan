@@ -28,7 +28,7 @@ public class ComputeEngineIntegrationTest {
         InMemoryDataComputeAPI data = new InMemoryDataComputeAPI(inCfg, outCfg);
        
         InterComputeAPIImpl inter = new InterComputeAPIImpl(data);
-        UserComputeAPIImpl user = new UserComputeAPIImpl(inter);
+        UserComputeAPIImpl user = new UserComputeAPIImpl(inter, data);
 
         user.handleRequest(new UserRequest(new byte[]{0}));
 

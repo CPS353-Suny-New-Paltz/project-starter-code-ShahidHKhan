@@ -1,5 +1,7 @@
 package project.datacompute;
 
+import java.util.List;
+
 import project.integration.InMemoryInpCon;
 import project.integration.InMemoryOutCon;
 
@@ -19,4 +21,16 @@ public class InMemoryDataComputeAPI implements DataComputeAPI{
             output.write(String.valueOf(n));
         }
     }
+
+	@Override
+	public List<Integer> readInput(String inputPath) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void writeOutput(List<String> out, String outputPath) {
+		// TODO Auto-generated method stub
+		
+	}
 }
