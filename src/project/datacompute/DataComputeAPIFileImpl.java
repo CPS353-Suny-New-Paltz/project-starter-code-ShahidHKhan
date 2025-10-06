@@ -57,7 +57,7 @@ public class DataComputeAPIFileImpl implements DataComputeAPI {
                 writer.newLine();
             }
         } catch (Exception ignore) {
-            
+            return;
         }
     }
 
