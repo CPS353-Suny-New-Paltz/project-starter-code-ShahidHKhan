@@ -16,7 +16,7 @@ public class TestUserComputeAPI {
         InterComputeAPI mockInter = mock(InterComputeAPI.class);
 
         // ctor injection instead of no-arg + setInter
-        UserComputeAPIImpl user = new UserComputeAPIImpl(mockInter);
+        UserComputeAPIImpl user = new UserComputeAPIImpl(mockInter, null);
 
         UserRequest req = new UserRequest(new byte[]{9, 9});
         user.handleRequest(req);
