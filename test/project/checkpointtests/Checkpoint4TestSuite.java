@@ -14,9 +14,7 @@ public class Checkpoint4TestSuite {
     public void testFileWritten() throws Exception {
         Path inputPath = Paths.get(ManualTestingFramework.INPUT);
         Files.deleteIfExists(inputPath);
-        
-        // Checkpoint 4 Note: If you chose a different input file format (ex: csv), you're
-        // allowed to update this line to create differently-formatted input data
+       
         Files.write(inputPath, "1\n2\n3".getBytes());
         
         ManualTestingFramework.main(new String[] {});

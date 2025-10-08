@@ -8,13 +8,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Data storage component that reads integers from a text file
- * and writes string results to a text file.
- *
- * Input format: one integer per line (e.g., 1, 10, 25).
- * Output format: one result per line (e.g., none, 7, 23).
- */
+ 
 public class DataComputeAPIFileImpl implements DataComputeAPI {
 
     @Override
@@ -51,11 +45,11 @@ public class DataComputeAPIFileImpl implements DataComputeAPI {
             return;
         }
         Path path = Path.of(outputPath);
-        String line = String.join(",", out); 
+        String line = String.join(",", out) + System.lineSeparator(); 
         try {
             Files.writeString(path, line, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            return; 
+            throw new RuntimeException("Failed to write output", e);  
         }
     }
 
