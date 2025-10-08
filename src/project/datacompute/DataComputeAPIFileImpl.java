@@ -30,17 +30,17 @@ public class DataComputeAPIFileImpl implements DataComputeAPI {
             while ((line = reader.readLine()) != null) {
                 String trimmed = line.trim();
                 if (!trimmed.isEmpty()) {
-                    // Let NumberFormatException bubble only if you prefer;
-                    // here we skip non-integer lines to be forgiving.
+                    
+                    
                     try {
                         result.add(Integer.parseInt(trimmed));
                     } catch (NumberFormatException ignore) {
-                        // skip malformed lines
+                       
                     }
                 }
             }
         } catch (Exception ignore) {
-            // In CP4 we can be lenient; return what we parsed so far (likely empty).
+            
         }
         return result;
     }
@@ -51,13 +51,11 @@ public class DataComputeAPIFileImpl implements DataComputeAPI {
             return;
         }
         Path path = Path.of(outputPath);
-        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-            for (String s : out) {
-                writer.write(s == null ? "" : s);
-                writer.newLine();
-            }
-        } catch (Exception ignore) {
-            
+        String line = String.join(",", out); 
+        try {
+            Files.writeString(path, line, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return; 
         }
     }
 
