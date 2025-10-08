@@ -51,11 +51,13 @@ public class DataComputeAPIFileImpl implements DataComputeAPI {
             return;
         }
         Path path = Path.of(outputPath);
-        String line = String.join(",", out); 
-        try {
-            Files.writeString(path, line, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            return; 
+        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+            for (String s : out) {
+                writer.write(s == null ? "" : s);
+                writer.newLine();
+            }
+        } catch (Exception ignore) {
+            return;
         }
     }
 
