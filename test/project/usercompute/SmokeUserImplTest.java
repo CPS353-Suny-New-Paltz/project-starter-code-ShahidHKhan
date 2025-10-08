@@ -1,6 +1,6 @@
 package project.usercompute;
 import org.junit.jupiter.api.Test;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 import project.datacompute.DataComputeAPI;
 import project.intercompute.InterComputeAPI;
 public class SmokeUserImplTest {
