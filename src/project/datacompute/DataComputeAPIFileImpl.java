@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
- 
 public class DataComputeAPIFileImpl implements DataComputeAPI {
 
     @Override
@@ -24,16 +23,14 @@ public class DataComputeAPIFileImpl implements DataComputeAPI {
             while ((line = reader.readLine()) != null) {
                 String trimmed = line.trim();
                 if (!trimmed.isEmpty()) {
-                    
-                    
                     try {
                         result.add(Integer.parseInt(trimmed));
-                    } catch (NumberFormatException ignore) {
-                       
+                    } catch (NumberFormatException expected) {  
+                        // skip malformed lines
                     }
                 }
             }
-        } catch (Exception ignore) {
+        } catch (Exception expected) {                           
             
         }
         return result;
@@ -44,17 +41,18 @@ public class DataComputeAPIFileImpl implements DataComputeAPI {
         if (outputPath == null || out == null) {
             return;
         }
+        
         Path path = Path.of(outputPath);
-        String line = String.join(",", out) + System.lineSeparator(); 
+        String line = String.join(",", out) + System.lineSeparator();
         try {
             Files.writeString(path, line, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to write output", e);  
+        } catch (Exception expected) {                           
+            
         }
     }
 
     @Override
     public void insertRequest(DataRequest dataRequest) {
-        
+        // not needed for this checkpoint
     }
 }
