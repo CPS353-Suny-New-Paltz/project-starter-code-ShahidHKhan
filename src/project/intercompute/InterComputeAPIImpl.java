@@ -1,5 +1,7 @@
 package project.intercompute;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import project.datacompute.DataComputeAPI;
@@ -15,16 +17,21 @@ public class InterComputeAPIImpl implements InterComputeAPI {
 
     @Override
     public void processRequest(InterRequest req) {
-        // Convert raw bytes → integer
-        byte[] bytes = req.getBytes();   // you’ll need a getter in InterRequest
-        int n = bytes[0];                // assuming 1 integer for now
+        if (req == null) return;
 
-        // Compute largest prime ≤ n
+        byte[] bytes = req.getBytes(); 
+        if (bytes == null || bytes.length == 0) {
+            
+            data.insertRequest(new DataRequest("none".getBytes(StandardCharsets.UTF_8)));
+            return;
+        }
+        
+        int n = Byte.toUnsignedInt(bytes[0]);
+        
         int largestPrime = LargestPrime.largestPrimeLeq(n);
 
-        // Store result in data layer
-        String result = String.valueOf(largestPrime);
-        data.insertRequest(new DataRequest(result.getBytes()));
+        String result = (largestPrime >= 2) ? String.valueOf(largestPrime) : "none";
+        data.insertRequest(new DataRequest(result.getBytes(StandardCharsets.UTF_8)));
     }
     
     @Override
