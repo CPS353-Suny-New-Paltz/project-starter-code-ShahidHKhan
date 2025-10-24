@@ -52,11 +52,25 @@ public class DataComputeAPIImpl implements DataComputeAPI {
 	    }
 
 	    Path path = Path.of(outputPath);
-	    try (BufferedWriter w = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-	        for (String s : out) {
-	            w.write(s == null ? "" : s);
-	            w.newLine();
+	    try {
+	        // makes sure parent directories exist
+	        Path parent = path.getParent();
+	        if (parent != null && !Files.exists(parent)) {
+	            Files.createDirectories(parent);
 	        }
+
+	        String csv = String.join(",", out.stream()
+	                .map(s -> s == null ? "" : s)
+	                .toList()) + System.lineSeparator();
+
+	        // uses my standardCHarset to Overwrite file
+	        Files.writeString(
+	                path,
+	                csv,
+	                java.nio.charset.StandardCharsets.UTF_8,
+	                java.nio.file.StandardOpenOption.CREATE,
+	                java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
+	        );
 	    } catch (Exception e) {
 	        throw new RuntimeException("Failed to write output file: " + e.getMessage(), e);
 	    }
