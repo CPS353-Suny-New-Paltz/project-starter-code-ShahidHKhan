@@ -1,7 +1,7 @@
 package project.checkpointtests;
 
 import project.datacompute.DataComputeAPI;
-import project.datacompute.DataComputeAPIFileImpl;
+import project.datacompute.DataComputeAPIImpl;
 import project.intercompute.InterComputeAPI;
 import project.intercompute.InterComputeAPIImpl;
 import project.usercompute.UserComputeAPI;
@@ -18,7 +18,7 @@ public class ManualTestingFramework {
         // Instantiate a real (ie, class definition lives in the src/ folder) implementation 
         // of all 3 APIs
         
-    	DataComputeAPI data = new DataComputeAPIFileImpl();
+    	DataComputeAPI data = new DataComputeAPIImpl();
     	InterComputeAPI inter = new InterComputeAPIImpl(data);
     	UserComputeAPI user = new UserComputeAPIImpl(inter, data);
     	
