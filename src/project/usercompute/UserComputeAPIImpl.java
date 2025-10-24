@@ -57,9 +57,9 @@ public class UserComputeAPIImpl implements UserComputeAPI {
             }
             inter.processRequest(new InterRequest(userRequest.getBytes()));
         } catch (IllegalArgumentException e) {
-            
+        	// intentionally ignore invalid user input 
         } catch (Exception e) {
-            
+        	// intentionally swallow unexpected exceptions
         }
     }
     static final class NoopInterComputeAPI implements InterComputeAPI {
