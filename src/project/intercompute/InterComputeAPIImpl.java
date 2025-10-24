@@ -35,14 +35,13 @@ public class InterComputeAPIImpl implements InterComputeAPI {
 
         int n = bytes[0];
 
-        // Compute largest prime ≤ n
         int largestPrime = LargestPrime.largestPrimeLeq(n);
 
         // Store result
         String result = String.valueOf(largestPrime);
         data.insertRequest(new DataRequest(result.getBytes()));
     }
-    
+
     @Override
     public List<String> computeAll(List<Integer> ns) {
         
@@ -57,7 +56,7 @@ public class InterComputeAPIImpl implements InterComputeAPI {
                 continue;
             }
             int p = LargestPrime.largestPrimeLeq(n);
-            out.add(String.valueOf(p));
+            out.add(p >= 2 ? String.valueOf(p) : "none");
         }
         return out;
     }
