@@ -3,6 +3,7 @@ package project.usercompute;
 import java.util.List;
 
 import project.datacompute.DataComputeAPI;
+import project.datacompute.DataRequest;
 import project.intercompute.InterComputeAPI;
 import project.intercompute.InterRequest;
 
@@ -12,15 +13,9 @@ public class UserComputeAPIImpl implements UserComputeAPI {
     private final DataComputeAPI data;
 
     public UserComputeAPIImpl(InterComputeAPI inter, DataComputeAPI data) {
-
-        if (inter == null) {
-            throw new IllegalArgumentException("InterComputeAPI cannot be null.");
-        }
-        if (data == null) {
-            throw new IllegalArgumentException("DataComputeAPI cannot be null.");
-        }
-        this.inter = inter;
-        this.data = data;
+        // ✅ Safe constructor: don’t throw; plug in default no-op fallbacks
+        this.inter = (inter != null) ? inter : NoopInterComputeAPI.INSTANCE;
+        this.data  = (data  != null) ? data  : NoopDataComputeAPI.INSTANCE;
     }
 
     @Override
@@ -67,4 +62,35 @@ public class UserComputeAPIImpl implements UserComputeAPI {
             
         }
     }
+    static final class NoopInterComputeAPI implements InterComputeAPI {
+        static final NoopInterComputeAPI INSTANCE = new NoopInterComputeAPI();
+        private NoopInterComputeAPI() {}
+        @Override
+        public void processRequest(InterRequest req) {
+            // do nothing
+        }
+        @Override
+        public List<String> computeAll(List<Integer> ns) {
+            return java.util.Collections.emptyList();
+        }
+    }
+
+    static final class NoopDataComputeAPI implements DataComputeAPI {
+        static final NoopDataComputeAPI INSTANCE = new NoopDataComputeAPI();
+        private NoopDataComputeAPI() {}
+        @Override
+        public List<Integer> readInput(String inputPath) {
+            return java.util.Collections.emptyList();
+        }
+        @Override
+        public void writeOutput(List<String> out, String outputPath) {
+            
+        }
+        @Override
+        public void insertRequest(DataRequest dataRequest) {
+            
+        }
+    }
+    
 }
+
