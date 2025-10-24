@@ -1,5 +1,6 @@
 package project.intercompute;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import project.datacompute.DataComputeAPI;
@@ -10,29 +11,46 @@ public class InterComputeAPIImpl implements InterComputeAPI {
     private final DataComputeAPI data;
 
     public InterComputeAPIImpl(DataComputeAPI data) {
+    	// Validate dependency (internal layer — throws instead of catching)
+        if (data == null) {
+            throw new IllegalArgumentException("DataComputeAPI cannot be null.");
+        }
         this.data = data;
     }
 
     @Override
     public void processRequest(InterRequest req) {
-        // Convert raw bytes → integer
-        byte[] bytes = req.getBytes();   // you’ll need a getter in InterRequest
-        int n = bytes[0];                // assuming 1 integer for now
+        // Validate parameter
+        if (req == null) {
+            throw new IllegalArgumentException("InterRequest cannot be null.");
+        }
+        if (data == null) {
+            throw new IllegalStateException("DataComputeAPI dependency is not initialized.");
+        }
+
+        byte[] bytes = req.getBytes();
+        if (bytes == null || bytes.length == 0) {
+            throw new IllegalArgumentException("InterRequest bytes cannot be null or empty.");
+        }
+
+        int n = bytes[0];
 
         // Compute largest prime ≤ n
         int largestPrime = LargestPrime.largestPrimeLeq(n);
 
-        // Store result in data layer
+        // Store result
         String result = String.valueOf(largestPrime);
         data.insertRequest(new DataRequest(result.getBytes()));
     }
     
     @Override
     public List<String> computeAll(List<Integer> ns) {
-        List<String> out = new java.util.ArrayList<>();
+        
         if (ns == null) {
-            return out;
+            throw new IllegalArgumentException("Input list 'ns' cannot be null.");
         }
+
+        List<String> out = new ArrayList<>();
         for (Integer n : ns) {
             if (n == null || n < 2) {
                 out.add("none");
