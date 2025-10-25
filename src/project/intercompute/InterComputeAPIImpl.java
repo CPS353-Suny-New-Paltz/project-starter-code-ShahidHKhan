@@ -45,9 +45,9 @@ public class InterComputeAPIImpl implements InterComputeAPI {
     @Override
     public List<String> computeAll(List<Integer> ns) {
         
-        if (ns == null) {
-            throw new IllegalArgumentException("Input list 'ns' cannot be null.");
-        }
+    	if (ns == null || ns.isEmpty()) {
+    	    throw new IllegalArgumentException("Input list 'ns' cannot be null or empty.");
+    	}
 
         List<String> out = new ArrayList<>();
         for (Integer n : ns) {
