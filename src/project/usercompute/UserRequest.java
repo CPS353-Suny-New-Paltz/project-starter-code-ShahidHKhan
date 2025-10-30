@@ -1,17 +1,16 @@
 package project.usercompute;
 
 public class UserRequest {
-    private final byte[] bytes;
+	private final int number;
 
-    public UserRequest(byte[] bytes) {
-        // Validate parameter
-        if (bytes == null) {
-            throw new IllegalArgumentException("bytes array cannot be null.");
+	public UserRequest(int number) {
+        // Validation: reject clearly invalid input values
+        if (number < 0) {
+            throw new IllegalArgumentException("number cannot be negative.");
         }
-        this.bytes = bytes;
+        this.number = number;
     }
-
-    public byte[] getBytes() {
-        return bytes;
+	public int getNumber() {
+        return number;
     }
 }

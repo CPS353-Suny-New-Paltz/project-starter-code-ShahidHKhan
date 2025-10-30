@@ -7,7 +7,7 @@ public class TestDataComputeAPI {
     @Test
     void smokeInsertRequestRuns() {
         DataComputeAPI api = new DataComputeAPIImpl();
-        DataRequest req = new DataRequest(new byte[]{1, 2, 3});
+        DataRequest req = new DataRequest(42); // example integer request
         api.insertRequest(req);
     }
 }

@@ -1,17 +1,17 @@
 package project.intercompute;
 
 public class InterRequest {
-    private final byte[] bytes;
+	private final int number;
 
-    public InterRequest(byte[] bytes) {
+	public InterRequest(int number) {
         
-        if (bytes == null) {
-            throw new IllegalArgumentException("bytes array cannot be null.");
+		if (number < 0) {
+            throw new IllegalArgumentException("number cannot be negative.");
         }
-        this.bytes = bytes;
+        this.number = number;
     }
 
-    public byte[] getBytes() {
-        return bytes;
+	public int getNumber() {
+        return number;
     }
 }

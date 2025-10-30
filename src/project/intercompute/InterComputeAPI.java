@@ -9,5 +9,5 @@ public interface InterComputeAPI {
 	
 	void processRequest(InterRequest request); 
 	
-	List<String> computeAll(List<Integer> ns);
+	List<Integer> computeAll(List<Integer> ns);
 }

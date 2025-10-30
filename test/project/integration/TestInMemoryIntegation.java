@@ -13,22 +13,20 @@ import project.integration.InMemoryOutCon;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 public class TestInMemoryIntegation {
 
-	@Test
-    void pipelineWritesAllIntegersAsStrings() {
+    @Test
+    void pipelineWritesAllIntegers() {
         List<Integer> input = Arrays.asList(1, 2, 3);
-        List<String> sink = new ArrayList<>();
+        List<Integer> sink = new ArrayList<>();
 
         InMemoryInpCon inCfg = new InMemoryInpCon(input);
         InMemoryOutCon outCfg = new InMemoryOutCon(sink);
 
         InMemoryDataComputeAPI data = new InMemoryDataComputeAPI(inCfg, outCfg);
 
-        data.insertRequest(new DataRequest(new byte[]{0}));
+        data.insertRequest(new DataRequest(0));
 
-        assertEquals(Arrays.asList("1", "2", "3"), sink);
+        assertEquals(Arrays.asList(1, 2, 3), sink);
     }
 }
-

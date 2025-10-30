@@ -1,7 +1,6 @@
 package project.datacompute;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,77 +9,85 @@ import java.util.List;
 
 public class DataComputeAPIImpl implements DataComputeAPI {
 
-	@Override
-	public List<Integer> readInput(String inputPath) {
-	    if (inputPath == null || inputPath.isBlank()) {
-	        throw new IllegalArgumentException("inputPath cannot be null or blank.");
-	    }
-	    Path path = Path.of(inputPath);
-	    if (!Files.exists(path)) {
-	        throw new IllegalArgumentException("Input file does not exist: " + inputPath);
-	    }
-	    if (!Files.isReadable(path)) {
-	        throw new IllegalArgumentException("Input file is not readable: " + inputPath);
-	    }
+    @Override
+    public List<Integer> readInput(String inputPath) {
+        if (inputPath == null || inputPath.isBlank()) {
+            System.err.println("readInput: inputPath cannot be empty.");
+            return new ArrayList<>();
+        }
 
-	    List<Integer> ns = new ArrayList<>();
-	    try (BufferedReader r = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-	        String line;
-	        while ((line = r.readLine()) != null) {
-	            line = line.trim();
-	            if (!line.isEmpty()) {
-	                try {
-	                    ns.add(Integer.parseInt(line));
-	                } catch (NumberFormatException ignored) {
-	                    // skip malformed lines
-	                }
-	            }
-	        }
-	    } catch (Exception e) {
-	        throw new RuntimeException("Failed to read input file: " + e.getMessage(), e);
-	    }
-	    return ns;
-	}
+        Path path = Path.of(inputPath);
+        if (!Files.exists(path) || !Files.isRegularFile(path)) {
+            System.err.println("readInput: file does not exist or is not a regular file: " + inputPath);
+            return new ArrayList<>();
+        }
+        if (!Files.isReadable(path)) {
+            System.err.println("readInput: file is not readable: " + inputPath);
+            return new ArrayList<>();
+        }
 
-	@Override
-	public void writeOutput(List<String> out, String outputPath) {
-	    if (out == null) {
-	        throw new IllegalArgumentException("Output list cannot be null.");
-	    }
-	    if (outputPath == null || outputPath.isBlank()) {
-	        throw new IllegalArgumentException("outputPath cannot be null or blank.");
-	    }
+        List<Integer> ns = new ArrayList<>();
+        try (BufferedReader r = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            String line;
+            while ((line = r.readLine()) != null) {
+                if (!line.isBlank()) {
+                    try {
+                        ns.add(Integer.parseInt(line.trim()));
+                    } catch (NumberFormatException e) {
+                        System.err.println("readInput: skipping invalid number: |" + line + "|");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("readInput: error while reading file: " + e.getMessage());
+            return new ArrayList<>();
+        }
+        return ns;
+    }
 
-	    Path path = Path.of(outputPath);
-	    try {
-	        // makes sure parent directories exist
-	        Path parent = path.getParent();
-	        if (parent != null && !Files.exists(parent)) {
-	            Files.createDirectories(parent);
-	        }
+    @Override
+    public void writeOutput(List<Integer> results, String outputPath) {
+        if (results == null || results.isEmpty()) {
+            System.err.println("writeOutput: no data to write.");
+            return;
+        }
+        if (outputPath == null || outputPath.isBlank()) {
+            System.err.println("writeOutput: outputPath cannot be empty.");
+            return;
+        }
 
-	        String csv = String.join(",", out.stream()
-	                .map(s -> s == null ? "" : s)
-	                .toList()) + System.lineSeparator();
+        Path path = Path.of(outputPath);
+        try {
+            Path parent = path.getParent();
+            if (parent != null && !Files.exists(parent)) {
+                Files.createDirectories(parent);
+            }
 
-	        // uses my standardCHarset to Overwrite file
-	        Files.writeString(
-	                path,
-	                csv,
-	                java.nio.charset.StandardCharsets.UTF_8,
-	                java.nio.file.StandardOpenOption.CREATE,
-	                java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
-	        );
-	    } catch (Exception e) {
-	        throw new RuntimeException("Failed to write output file: " + e.getMessage(), e);
-	    }
-	}
+            String csv = String.join(
+                ",",
+                results.stream()
+                       .map(i -> i == null ? "" : Integer.toString(i))
+                       .toList()
+            ) + System.lineSeparator();
+
+            Files.writeString(
+                path,
+                csv,
+                StandardCharsets.UTF_8,
+                java.nio.file.StandardOpenOption.CREATE,
+                java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
+            );
+        } catch (Exception e) {
+            System.err.println("writeOutput: error writing file: " + e.getMessage());
+        }
+    }
 
     @Override
     public void insertRequest(DataRequest dataRequest) {
-        
         if (dataRequest == null) {
-            throw new IllegalArgumentException("DataRequest cannot be null.");
+            System.err.println("insertRequest: DataRequest cannot be null.");
+            return;
         }
+        // no-op: add persistence if/when you have a backing store
     }
 }
