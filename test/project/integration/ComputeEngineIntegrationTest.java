@@ -28,7 +28,7 @@ public class ComputeEngineIntegrationTest {
         InterComputeAPIImpl inter = new InterComputeAPIImpl(data);
         UserComputeAPIImpl user = new UserComputeAPIImpl(inter, data);
 
-        user.handleRequest(new UserRequest(0));
+        user.handleRequest(new UserRequest(Integer.MAX_VALUE)); // or a large number, e.g., 1_000_000
 
         List<Integer> expected = Arrays.asList(1, 10, 25);
 
