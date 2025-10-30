@@ -1,13 +1,14 @@
 package project.datacompute;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import project.integration.InMemoryInpCon;
 import project.integration.InMemoryOutCon;
 
-public class InMemoryDataComputeAPI implements DataComputeAPI{
-	
-	private final InMemoryInpCon input;
+public class InMemoryDataComputeAPI implements DataComputeAPI {
+
+    private final InMemoryInpCon input;
     private final InMemoryOutCon output;
 
     public InMemoryDataComputeAPI(InMemoryInpCon input, InMemoryOutCon output) {
@@ -17,20 +18,22 @@ public class InMemoryDataComputeAPI implements DataComputeAPI{
 
     @Override
     public void insertRequest(DataRequest dataRequest) {
+        if (dataRequest == null) return;
         for (Integer n : input.getInts()) {
-            output.write(String.valueOf(n));
+            output.write(n);           
         }
     }
 
-	@Override
-	public List<Integer> readInput(String inputPath) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<Integer> readInput(String inputPath) {
+        return new ArrayList<>(input.getInts());
+    }
 
-	@Override
-	public void writeOutput(List<String> out, String outputPath) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void writeOutput(List<Integer> results, String outputPath) {
+        if (results == null) return;
+        for (Integer n : results) {
+            output.write(n);
+        }
+    }
 }

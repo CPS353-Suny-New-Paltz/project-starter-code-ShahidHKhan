@@ -3,16 +3,20 @@ package project.usercompute;
 import project.annotations.NetworkAPIPrototype;
 
 public class UserComputeAPIPrototype {
-	
-	@NetworkAPIPrototype
+
+    @NetworkAPIPrototype
     public void prototype(UserComputeAPI user) {
         // Validate parameter manually
         if (user == null) {
             throw new IllegalArgumentException("UserComputeAPI instance cannot be null.");
         }
-        //no validation needed
+
+        // No additional validation needed
         UserComputeAPI compute = user;
-        compute.handleRequest(new UserRequest("Hello from UserCompute".getBytes()));
-        compute.handleRequest(new UserRequest(new byte[]{10, 20, 30}));
+
+        // Example test requests using integer values
+        compute.handleRequest(new UserRequest(10));
+        compute.handleRequest(new UserRequest(25));
+        compute.handleRequest(new UserRequest(97));
     }
 }

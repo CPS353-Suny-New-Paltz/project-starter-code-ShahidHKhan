@@ -7,5 +7,6 @@ public interface DataComputeAPI {
 	void insertRequest(DataRequest dataRequest);
 	
 	List<Integer> readInput(String inputPath);
-	void writeOutput(List<String> out, String outputPath);
+	void writeOutput(List<Integer> results, String outputPath);
+
 }

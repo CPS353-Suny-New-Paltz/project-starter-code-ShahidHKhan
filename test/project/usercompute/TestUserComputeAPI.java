@@ -15,10 +15,9 @@ public class TestUserComputeAPI {
     void smokeHandleRequestWithMockedInterLayer() {
         InterComputeAPI mockInter = mock(InterComputeAPI.class);
 
-        // ctor injection instead of no-arg + setInter
         UserComputeAPIImpl user = new UserComputeAPIImpl(mockInter, null);
 
-        UserRequest req = new UserRequest(new byte[]{9, 9});
+        UserRequest req = new UserRequest(99);
         user.handleRequest(req);
 
         verify(mockInter, atLeast(0)).processRequest(any(InterRequest.class));
