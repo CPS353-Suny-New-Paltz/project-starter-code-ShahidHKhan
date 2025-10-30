@@ -18,7 +18,9 @@ public class InMemoryDataComputeAPI implements DataComputeAPI {
 
     @Override
     public void insertRequest(DataRequest dataRequest) {
-        if (dataRequest == null) return;
+        if (dataRequest == null) {
+        	return;
+        }
         for (Integer n : input.getInts()) {
             output.write(n);           
         }
@@ -31,7 +33,9 @@ public class InMemoryDataComputeAPI implements DataComputeAPI {
 
     @Override
     public void writeOutput(List<Integer> results, String outputPath) {
-        if (results == null) return;
+        if (results == null) {
+        	return;
+        }
         for (Integer n : results) {
             output.write(n);
         }

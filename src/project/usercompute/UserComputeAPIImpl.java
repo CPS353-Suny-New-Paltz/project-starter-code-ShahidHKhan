@@ -49,7 +49,9 @@ public class UserComputeAPIImpl implements UserComputeAPI {
             }
             inter.processRequest(new InterRequest(userRequest.getNumber()));
         } catch (IllegalArgumentException e) {
+        	System.err.println("Invalid user request: " + e.getMessage());
         } catch (Exception e) {
+        	System.err.println("UserComputeAPIImpl.handleRequest error: " + e.getMessage());
         }
     }
 
