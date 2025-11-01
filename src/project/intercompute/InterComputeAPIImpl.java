@@ -8,13 +8,13 @@ public class InterComputeAPIImpl implements InterComputeAPI {
 
     @Override
     public int processRequest(InterRequest req) {
-        if (req == null) {
-            throw new IllegalArgumentException("InterRequest cannot be null.");
-        }
-        final int n = req.getNumber();
-        if (n < 2) {
-            return -1; 
-        }
+    	
+        if (req == null) throw new IllegalArgumentException("InterRequest cannot be null.");
+        
+        int n = req.getNumber();
+        
+        if (n < 2) return -1;         
+        
         return LargestPrime.largestPrimeLeq(n);
     }
 }

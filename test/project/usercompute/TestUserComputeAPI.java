@@ -1,25 +1,81 @@
 package project.usercompute;
 
 import org.junit.jupiter.api.Test;
+
+import project.datacompute.DataComputeAPI;
 import project.intercompute.InterComputeAPI;
 import project.intercompute.InterRequest;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+
+import java.util.Collections;
 
 public class TestUserComputeAPI {
 
+    private static UserComputeAPI sut(InterComputeAPI inter, DataComputeAPI data) {
+        return new UserComputeAPIImpl(inter, data);
+    }
+
     @Test
-    void smokeHandleRequestWithMockedInterLayer() {
-        InterComputeAPI mockInter = mock(InterComputeAPI.class);
+    void handleRequest_callsInter() {
+        InterComputeAPI inter = mock(InterComputeAPI.class);
+        DataComputeAPI data   = mock(DataComputeAPI.class);
+        UserComputeAPI user   = sut(inter, data);
 
-        UserComputeAPIImpl user = new UserComputeAPIImpl(mockInter, null);
+        user.handleRequest(new UserRequest(99));
 
-        UserRequest req = new UserRequest(99);
-        user.handleRequest(req);
+        verify(inter).processRequest(any(InterRequest.class));
+        verifyNoMoreInteractions(inter);
+        verifyNoInteractions(data);
+    }
 
-        verify(mockInter, atLeast(0)).processRequest(any(InterRequest.class));
+    @Test
+    void compute_ok_writesOutput() {
+        InterComputeAPI inter = mock(InterComputeAPI.class);
+        DataComputeAPI data   = mock(DataComputeAPI.class);
+        when(inter.processRequest(any(InterRequest.class))).thenReturn(23);
+
+        UserComputeAPI user = sut(inter, data);
+
+        ComputeResponse resp = user.compute(new ComputeRequest(() -> 25, "out.csv"));
+
+        assertTrue(resp.isSuccess());
+        assertEquals(23, resp.getResult());
+        verify(inter).processRequest(any(InterRequest.class));
+        verify(data).writeOutput(eq(Collections.singletonList(23)), eq("out.csv"));
+        verifyNoMoreInteractions(inter, data);
+    }
+
+    @Test
+    void compute_badInput_fails() {
+        InterComputeAPI inter = mock(InterComputeAPI.class);
+        DataComputeAPI data   = mock(DataComputeAPI.class);
+        UserComputeAPI user   = sut(inter, data);
+
+        ComputeResponse r1 = user.compute(null);
+        ComputeResponse r2 = user.compute(new ComputeRequest(null, "out.csv"));
+
+        assertFalse(r1.isSuccess());
+        assertFalse(r2.isSuccess());
+        verifyNoInteractions(inter, data);
+    }
+
+    @Test
+    void compute_ok_noOut_doesNotWrite() {
+        InterComputeAPI inter = mock(InterComputeAPI.class);
+        DataComputeAPI data   = mock(DataComputeAPI.class);
+        when(inter.processRequest(any(InterRequest.class))).thenReturn(7);
+
+        UserComputeAPI user = sut(inter, data);
+
+        ComputeResponse resp = user.compute(new ComputeRequest(() -> 10, null));
+
+        assertTrue(resp.isSuccess());
+        assertEquals(7, resp.getResult());
+        verify(inter).processRequest(any(InterRequest.class));
+        verifyNoInteractions(data);
     }
 }
+
