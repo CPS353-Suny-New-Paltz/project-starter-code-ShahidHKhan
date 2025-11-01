@@ -1,6 +1,7 @@
 package project.usercompute;
 
 import java.util.List;
+import java.util.Collections;
 
 import project.datacompute.DataComputeAPI;
 import project.intercompute.InterComputeAPI;
@@ -12,79 +13,40 @@ public class UserComputeAPIImpl implements UserComputeAPI {
     private final DataComputeAPI data;
 
     public UserComputeAPIImpl(InterComputeAPI inter, DataComputeAPI data) {
-        this.inter = (inter != null) ? inter : NoopInterComputeAPI.INSTANCE;
-        this.data  = (data  != null) ? data  : NoopDataComputeAPI.INSTANCE;
+        if (inter == null) throw new IllegalArgumentException("InterComputeAPI cannot be null.");
+        if (data == null)  throw new IllegalArgumentException("DataComputeAPI cannot be null.");
+        this.inter = inter;
+        this.data = data;
     }
 
     @Override
-    public boolean handle(String inputPath, String outputPath) {
+    public ComputeResponse compute(ComputeRequest request) {
         try {
-            if (inputPath == null || inputPath.isBlank()) {
-                throw new IllegalArgumentException("inputPath cannot be null or blank.");
-            }
-            if (outputPath == null || outputPath.isBlank()) {
-                throw new IllegalArgumentException("outputPath cannot be null or blank.");
+            if (request == null || request.getSource() == null) {
+                return new ComputeResponse(0, ComputeResponse.Status.FAIL);
             }
 
-            List<Integer> ns = data.readInput(inputPath);
-            if (ns == null) {
-                throw new IllegalStateException("DataComputeAPI returned null for readInput().");
+            int n = request.getSource().get();
+            int result = inter.processRequest(new InterRequest(n));
+
+            if (request.getOutputPath() != null) {
+                data.writeOutput(java.util.Collections.singletonList(result), request.getOutputPath());
             }
 
-            List<Integer> results = inter.computeAll(ns);
-            data.writeOutput(results, outputPath);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
+            return new ComputeResponse(result, ComputeResponse.Status.SUCCESS);
+
         } catch (Exception e) {
-            return false;
+            System.err.println("UserComputeAPIImpl.compute error: " + e.getMessage());
+            return new ComputeResponse(0, ComputeResponse.Status.FAIL);
         }
     }
+
 
     @Override
     public void handleRequest(UserRequest userRequest) {
-        try {
-            if (userRequest == null) {
-                throw new IllegalArgumentException("userRequest cannot be null.");
-            }
-            inter.processRequest(new InterRequest(userRequest.getNumber()));
-        } catch (IllegalArgumentException e) {
-        	System.err.println("Invalid user request: " + e.getMessage());
-        } catch (Exception e) {
-        	System.err.println("UserComputeAPIImpl.handleRequest error: " + e.getMessage());
+        if (userRequest == null) {
+            throw new IllegalArgumentException("userRequest cannot be null.");
         }
-    }
-
-    static final class NoopInterComputeAPI implements InterComputeAPI {
-        static final NoopInterComputeAPI INSTANCE = new NoopInterComputeAPI();
-        private NoopInterComputeAPI() {}
-
-        @Override
-        public void processRequest(InterRequest req) {
-        }
-
-        @Override
-        public List<Integer> computeAll(List<Integer> ns) {
-            return java.util.Collections.emptyList();
-        }
-    }
-
-    static final class NoopDataComputeAPI implements DataComputeAPI {
-        static final NoopDataComputeAPI INSTANCE = new NoopDataComputeAPI();
-        private NoopDataComputeAPI() {}
-
-        @Override
-        public List<Integer> readInput(String inputPath) {
-            return java.util.Collections.emptyList();
-        }
-
-        @Override
-        public void writeOutput(List<Integer> out, String outputPath) {
-        }
-
-        @Override
-        public void insertRequest(project.datacompute.DataRequest dataRequest) {
-        }
+        inter.processRequest(new InterRequest(userRequest.getNumber()));
     }
 }
-

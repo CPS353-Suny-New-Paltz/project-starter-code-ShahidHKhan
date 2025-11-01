@@ -1,56 +1,56 @@
 package project.integration;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import project.usercompute.UserComputeAPIImpl;
 import project.datacompute.DataComputeAPI;
 import project.intercompute.InterComputeAPI;
+import project.intercompute.InterRequest;
+import project.usercompute.ComputeRequest;
+import project.usercompute.ComputeResponse;
+import project.usercompute.DataSource;
+import project.usercompute.UserComputeAPI;
+import project.usercompute.UserComputeAPIImpl;
 
 public class ExceptionHandlingTest {
 
     @Test
-    void handleInterLayeThrows() {
-        // arrange
-        DataComputeAPI data = mock(DataComputeAPI.class);
-        InterComputeAPI inter = mock(InterComputeAPI.class);
+    void userCompute_returnsFail_whenInterThrows_andDoesNotWrite() {
+        InterComputeAPI inter = new InterComputeAPI() {
+            @Override
+            public int processRequest(InterRequest req) {
+                throw new RuntimeException("Compute failure");
+            }
+        };
 
-        when(data.readInput("input.txt")).thenReturn(List.of(1, 2, 3));
-        when(inter.computeAll(any())).thenThrow(new RuntimeException("boom"));
+        class CapturingData implements DataComputeAPI {
+            List<Integer> lastWrite = null;
+            
+            @Override 
+            public List<Integer> readInput(String inputPath) { return List.of(5); }
+            
+            @Override 
+            public void writeOutput(List<Integer> results, String outputPath) {
+                lastWrite = new ArrayList<>(results);
+            }
+        }
+        CapturingData data = new CapturingData();
 
-        UserComputeAPIImpl api = new UserComputeAPIImpl(inter, data);
+        UserComputeAPI user = new UserComputeAPIImpl(inter, data);
 
-        // act
-        boolean result = api.handle("input.txt", "output.txt");
+        DataSource src = () -> 5;
+        ComputeRequest req = new ComputeRequest(src, "ignored.csv");
 
-        // assert
-        assertFalse(result, "API should translate exception to a sentinel false");
-        verify(data, never()).writeOutput(any(), any());
-    }
+        ComputeResponse resp = user.compute(req);
 
-    @Test
-    void handleDataLayeThrows() {
-        // arrange
-        DataComputeAPI data = mock(DataComputeAPI.class);
-        InterComputeAPI inter = mock(InterComputeAPI.class);
-
-        when(data.readInput("input.txt")).thenThrow(new RuntimeException("read failed"));
-
-        UserComputeAPIImpl api = new UserComputeAPIImpl(inter, data);
-
-        // act
-        boolean result = api.handle("input.txt", "output.txt");
-
-        // assert
-        assertFalse(result);
-        verify(inter, never()).computeAll(any());
+        assertNotNull(resp);
+        assertEquals(ComputeResponse.Status.FAIL, resp.getStatus());
+        assertEquals(0, resp.getResult());
+        assertEquals(null, data.lastWrite, "Storage should not be written on failure");
     }
 }

@@ -81,13 +81,4 @@ public class DataComputeAPIImpl implements DataComputeAPI {
             System.err.println("writeOutput: error writing file: " + e.getMessage());
         }
     }
-
-    @Override
-    public void insertRequest(DataRequest dataRequest) {
-        if (dataRequest == null) {
-            System.err.println("insertRequest: DataRequest cannot be null.");
-            return;
-        }
-        // no-op: add persistence if/when you have a backing store
-    }
 }

@@ -6,17 +6,14 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import project.datacompute.DataRequest;
 import project.datacompute.InMemoryDataComputeAPI;
-import project.integration.InMemoryInpCon;
-import project.integration.InMemoryOutCon;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestInMemoryIntegation {
+public class TestInMemoryIntegration {
 
     @Test
-    void pipelineWritesAllIntegers() {
+    void pipelineTransfersAllIntegers() {
         List<Integer> input = Arrays.asList(1, 2, 3);
         List<Integer> sink = new ArrayList<>();
 
@@ -25,7 +22,8 @@ public class TestInMemoryIntegation {
 
         InMemoryDataComputeAPI data = new InMemoryDataComputeAPI(inCfg, outCfg);
 
-        data.insertRequest(new DataRequest(0));
+        List<Integer> readValues = data.readInput("ignored");
+        data.writeOutput(readValues, "ignored");
 
         assertEquals(Arrays.asList(1, 2, 3), sink);
     }
