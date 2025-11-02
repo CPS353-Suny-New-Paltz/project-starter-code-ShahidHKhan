@@ -1,7 +1,9 @@
 package project.usercompute;
 
+import java.util.List;
+
 @FunctionalInterface
 public interface DataSource {
-    
-    int get();
+   
+    List<Integer> get();
 }

@@ -1,6 +1,7 @@
 package project.checkpointtests;
 
 import project.datacompute.DataComputeAPI;
+import java.util.Collections;
 import project.datacompute.DataComputeAPIImpl;
 import project.intercompute.InterComputeAPI;
 import project.intercompute.InterComputeAPIImpl;
@@ -26,7 +27,7 @@ public class ManualTestingFramework {
       
         DataSource fileSource = () -> {
             List<Integer> nums = data.readInput(INPUT);
-            return (nums == null || nums.isEmpty()) ? -1 : nums.get(0);
+            return (nums == null) ? Collections.emptyList() : nums;
         };
 
         

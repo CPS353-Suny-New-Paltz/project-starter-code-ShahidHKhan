@@ -23,30 +23,28 @@ public class ComputeEngineIntegrationTest {
 
     @Test
     void testIntegration_endToEnd() {
-        
         List<Integer> input = Arrays.asList(1, 10, 25);
         List<Integer> sink  = new ArrayList<>();
+
         InMemoryInpCon in  = new InMemoryInpCon(input);
         InMemoryOutCon out = new InMemoryOutCon(sink);
         InMemoryDataComputeAPI data = new InMemoryDataComputeAPI(in, out);
 
-  
-        InterComputeAPI inter = new InterComputeAPIImpl();    
+        InterComputeAPI inter = new InterComputeAPIImpl();
         UserComputeAPI user   = new UserComputeAPIImpl(inter, data);
 
-        
-        for (Integer n : input) {
-            DataSource source = () -> n;                       
-            ComputeRequest req = new ComputeRequest(source, "ignored");
-            ComputeResponse resp = user.compute(req);
-            
-        }
+        // DataSource now returns the full list
+        DataSource source = () -> input;
 
-        
+        // Single unified call processes all inputs and writes all outputs
+        ComputeRequest req = new ComputeRequest(source, "ignored");
+        ComputeResponse resp = user.compute(req);
+        // (resp.getResult() is last result; file/sink has all results)
+
         List<Integer> expected = Arrays.asList(
-            -1, // 1 has no prime < 1
-             7, // largest prime < 10
-            23  // largest prime < 25
+            -1,  // 1 has no prime ≤ 1
+             7,  // largest prime ≤ 10
+            23   // largest prime ≤ 25
         );
         assertEquals(expected, sink);
     }

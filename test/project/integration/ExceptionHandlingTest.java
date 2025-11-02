@@ -30,11 +30,11 @@ public class ExceptionHandlingTest {
 
         class CapturingData implements DataComputeAPI {
             List<Integer> lastWrite = null;
-            
-            @Override 
+
+            @Override
             public List<Integer> readInput(String inputPath) { return List.of(5); }
-            
-            @Override 
+
+            @Override
             public void writeOutput(List<Integer> results, String outputPath) {
                 lastWrite = new ArrayList<>(results);
             }
@@ -43,7 +43,7 @@ public class ExceptionHandlingTest {
 
         UserComputeAPI user = new UserComputeAPIImpl(inter, data);
 
-        DataSource src = () -> 5;
+        DataSource src = () -> List.of(5);
         ComputeRequest req = new ComputeRequest(src, "ignored.csv");
 
         ComputeResponse resp = user.compute(req);

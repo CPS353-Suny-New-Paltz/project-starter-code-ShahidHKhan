@@ -11,6 +11,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.*;
 
 import java.util.Collections;
+import java.util.List;
 
 public class TestUserComputeAPI {
 
@@ -39,7 +40,7 @@ public class TestUserComputeAPI {
 
         UserComputeAPI user = sut(inter, data);
 
-        ComputeResponse resp = user.compute(new ComputeRequest(() -> 25, "out.csv"));
+        ComputeResponse resp = user.compute(new ComputeRequest(() -> List.of(25), "out.csv"));
 
         assertTrue(resp.isSuccess());
         assertEquals(23, resp.getResult());
@@ -64,7 +65,6 @@ public class TestUserComputeAPI {
         verifyNoInteractions(inter, data);
     }
 
-
     @Test
     void compute_ok_noOut_doesNotWrite() {
         InterComputeAPI inter = mock(InterComputeAPI.class);
@@ -73,7 +73,7 @@ public class TestUserComputeAPI {
 
         UserComputeAPI user = sut(inter, data);
 
-        ComputeResponse resp = user.compute(new ComputeRequest(() -> 10, null));
+        ComputeResponse resp = user.compute(new ComputeRequest(() -> List.of(10), null));
 
         assertTrue(resp.isSuccess());
         assertEquals(7, resp.getResult());
@@ -81,4 +81,3 @@ public class TestUserComputeAPI {
         verifyNoInteractions(data);
     }
 }
-

@@ -26,20 +26,31 @@ public class UserComputeAPIImpl implements UserComputeAPI {
                 return new ComputeResponse(0, ComputeResponse.Status.FAIL);
             }
 
-            int n = request.getSource().get();
-            int result = inter.processRequest(new InterRequest(n));
-
-            if (request.getOutputPath() != null) {
-                data.writeOutput(java.util.Collections.singletonList(result), request.getOutputPath());
+            java.util.List<Integer> inputs = request.getSource().get();
+            if (inputs == null || inputs.isEmpty()) {
+                return new ComputeResponse(0, ComputeResponse.Status.FAIL);
             }
 
-            return new ComputeResponse(result, ComputeResponse.Status.SUCCESS);
+            java.util.List<Integer> outputs = new java.util.ArrayList<>(inputs.size());
+            for (Integer n : inputs) {
+                int val = (n == null) ? -1 : n.intValue();
+                int result = inter.processRequest(new InterRequest(val));
+                outputs.add(result);
+            }
+
+            String outPath = request.getOutputPath();
+            if (outPath != null) {
+                data.writeOutput(outputs, outPath);
+            }
+
+            return new ComputeResponse(outputs.get(outputs.size() - 1), ComputeResponse.Status.SUCCESS);
 
         } catch (Exception e) {
             System.err.println("UserComputeAPIImpl.compute error: " + e.getMessage());
             return new ComputeResponse(0, ComputeResponse.Status.FAIL);
         }
     }
+
 
 
     @Override
