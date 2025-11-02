@@ -47,14 +47,14 @@ public class DataComputeAPIImpl implements DataComputeAPI {
 
     @Override
     public void writeOutput(List<Integer> results, String outputPath) {
-        if (results == null || results.isEmpty()) {
-            System.err.println("writeOutput: no data to write.");
-            return;
-        }
-        if (outputPath == null || outputPath.isBlank()) {
-            System.err.println("writeOutput: outputPath cannot be empty.");
-            return;
-        }
+    	if (results == null || results.isEmpty()) {
+    	    System.err.println("writeOutput: no data to write.");
+    	    return;
+    	}
+    	if (outputPath == null || outputPath.isBlank()) {
+    	    System.err.println("writeOutput: outputPath cannot be empty.");
+    	    return;
+    	}
 
         Path path = Path.of(outputPath);
         try {
@@ -63,31 +63,18 @@ public class DataComputeAPIImpl implements DataComputeAPI {
                 Files.createDirectories(parent);
             }
 
-            String csv = String.join(
-                ",",
-                results.stream()
-                       .map(i -> i == null ? "" : Integer.toString(i))
-                       .toList()
-            ) + System.lineSeparator();
+            String csv = results.stream()
+                .map(i -> i == null ? "" : Integer.toString(i))
+                .collect(java.util.stream.Collectors.joining(","));  // ← NO newline, NO spaces
 
             Files.writeString(
-                path,
-                csv,
-                StandardCharsets.UTF_8,
+                path, csv, StandardCharsets.UTF_8,
                 java.nio.file.StandardOpenOption.CREATE,
                 java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
             );
         } catch (Exception e) {
-            System.err.println("writeOutput: error writing file: " + e.getMessage());
+            System.err.println("writeOutput error: " + e.getMessage());
         }
     }
 
-    @Override
-    public void insertRequest(DataRequest dataRequest) {
-        if (dataRequest == null) {
-            System.err.println("insertRequest: DataRequest cannot be null.");
-            return;
-        }
-        // no-op: add persistence if/when you have a backing store
-    }
 }

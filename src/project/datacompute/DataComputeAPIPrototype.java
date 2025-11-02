@@ -1,21 +1,31 @@
 package project.datacompute;
 
+import java.util.ArrayList;
+import java.util.List;
 import project.annotations.ProcessAPIPrototype;
 
 public class DataComputeAPIPrototype {
 
     @ProcessAPIPrototype
     public void prototype(DataComputeAPI storage) {
-        // Validate input parameter
         if (storage == null) {
             throw new IllegalArgumentException("DataComputeAPI instance cannot be null.");
         }
 
-        DataComputeAPI compute = storage;
+        final String inputPath = "data/input.txt";
+        final String outputPath = "data/output.csv";
 
-        // Example test requests using integer values
-        compute.insertRequest(new DataRequest(10));
-        compute.insertRequest(new DataRequest(42));
-        compute.insertRequest(new DataRequest(99));
+        List<Integer> input = storage.readInput(inputPath);
+
+        int sum = 0;
+        for (Integer v : input) {
+            if (v != null) {
+                sum += v;
+            }
+        }
+
+        List<Integer> out = new ArrayList<>();
+        out.add(sum);
+        storage.writeOutput(out, outputPath);
     }
 }
