@@ -68,7 +68,8 @@ public class TestUserComputeAPI {
 
         ComputeResponse r1 = user.compute(null);
 
-        DataSource badSrc = () -> { throw new RuntimeException("boom"); 
+        DataSource badSrc = () -> {
+            throw new RuntimeException("boom");
         };
         ComputeResponse r2 = user.compute(new ComputeRequest(badSrc, "out.csv"));
 
