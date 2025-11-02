@@ -11,7 +11,7 @@ public class DataComputeAPIPrototype {
         if (storage == null) {
             throw new IllegalArgumentException("DataComputeAPI instance cannot be null.");
         }
-        
+
         final String inputPath = "data/input.txt";
         final String outputPath = "data/output.csv";
 
@@ -19,12 +19,13 @@ public class DataComputeAPIPrototype {
 
         int sum = 0;
         for (Integer v : input) {
-            if (v != null) sum += v;
+            if (v != null) {
+                sum += v;
+            }
         }
 
         List<Integer> out = new ArrayList<>();
         out.add(sum);
         storage.writeOutput(out, outputPath);
-
     }
 }

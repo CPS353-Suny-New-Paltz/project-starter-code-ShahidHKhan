@@ -13,10 +13,14 @@ public class UserComputeAPIImpl implements UserComputeAPI {
     private final DataComputeAPI data;
 
     public UserComputeAPIImpl(InterComputeAPI inter, DataComputeAPI data) {
-        if (inter == null) throw new IllegalArgumentException("InterComputeAPI cannot be null.");
-        if (data == null)  throw new IllegalArgumentException("DataComputeAPI cannot be null.");
+        if (inter == null) {
+            throw new IllegalArgumentException("InterComputeAPI cannot be null.");
+        }
+        if (data == null) {
+            throw new IllegalArgumentException("DataComputeAPI cannot be null.");
+        }
         this.inter = inter;
-        this.data = data;
+        this.data  = data;
     }
 
     @Override

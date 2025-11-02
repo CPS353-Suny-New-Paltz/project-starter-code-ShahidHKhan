@@ -24,7 +24,9 @@ public class InMemoryDataComputeAPI implements DataComputeAPI {
 
     @Override
     public void writeOutput(List<Integer> results, String outputPath) {
-        if (results == null) return;
+    	if (results == null) {
+    	    return;
+    	}
         for (Integer n : results) {
             output.write(n);
         }

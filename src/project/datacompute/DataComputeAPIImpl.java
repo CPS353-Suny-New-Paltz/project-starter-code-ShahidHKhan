@@ -47,13 +47,21 @@ public class DataComputeAPIImpl implements DataComputeAPI {
 
     @Override
     public void writeOutput(List<Integer> results, String outputPath) {
-        if (results == null || results.isEmpty()) return;
-        if (outputPath == null || outputPath.isBlank()) return;
+    	if (results == null || results.isEmpty()) {
+    	    System.err.println("writeOutput: no data to write.");
+    	    return;
+    	}
+    	if (outputPath == null || outputPath.isBlank()) {
+    	    System.err.println("writeOutput: outputPath cannot be empty.");
+    	    return;
+    	}
 
         Path path = Path.of(outputPath);
         try {
             Path parent = path.getParent();
-            if (parent != null && !Files.exists(parent)) Files.createDirectories(parent);
+            if (parent != null && !Files.exists(parent)) {
+                Files.createDirectories(parent);
+            }
 
             String csv = results.stream()
                 .map(i -> i == null ? "" : Integer.toString(i))

@@ -10,6 +10,7 @@ public class InterRequest {
  }
  
 	public int getNumber() { 
-		return number; }
+		return number; 
+	}
 }
 

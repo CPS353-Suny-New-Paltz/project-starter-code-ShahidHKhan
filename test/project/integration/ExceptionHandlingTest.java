@@ -32,7 +32,9 @@ public class ExceptionHandlingTest {
             List<Integer> lastWrite = null;
 
             @Override
-            public List<Integer> readInput(String inputPath) { return List.of(5); }
+            public List<Integer> readInput(String inputPath) {
+                return List.of(5);
+            }
 
             @Override
             public void writeOutput(List<Integer> results, String outputPath) {

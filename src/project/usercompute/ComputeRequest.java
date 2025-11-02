@@ -2,7 +2,7 @@ package project.usercompute;
 
 public class ComputeRequest {
     private final DataSource source;
-    private final String outputPath; 
+    private final String outputPath;
 
     public ComputeRequest(DataSource source, String outputPath) {
         if (source == null) {
@@ -12,6 +12,12 @@ public class ComputeRequest {
         this.outputPath = outputPath;
     }
 
-    public DataSource getSource() { return source; }
-    public String getOutputPath() { return outputPath; }
+    public DataSource getSource() {
+        return source;
+    }
+
+    public String getOutputPath() {
+        return outputPath;
+    }
 }
+
