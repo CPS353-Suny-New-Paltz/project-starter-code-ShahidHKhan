@@ -47,38 +47,26 @@ public class DataComputeAPIImpl implements DataComputeAPI {
 
     @Override
     public void writeOutput(List<Integer> results, String outputPath) {
-        if (results == null || results.isEmpty()) {
-            System.err.println("writeOutput: no data to write.");
-            return;
-        }
-        if (outputPath == null || outputPath.isBlank()) {
-            System.err.println("writeOutput: outputPath cannot be empty.");
-            return;
-        }
+        if (results == null || results.isEmpty()) return;
+        if (outputPath == null || outputPath.isBlank()) return;
 
         Path path = Path.of(outputPath);
         try {
             Path parent = path.getParent();
-            if (parent != null && !Files.exists(parent)) {
-                Files.createDirectories(parent);
-            }
+            if (parent != null && !Files.exists(parent)) Files.createDirectories(parent);
 
-            String csv = String.join(
-                ",",
-                results.stream()
-                       .map(i -> i == null ? "" : Integer.toString(i))
-                       .toList()
-            ) + System.lineSeparator();
+            String csv = results.stream()
+                .map(i -> i == null ? "" : Integer.toString(i))
+                .collect(java.util.stream.Collectors.joining(","));  // ← NO newline, NO spaces
 
             Files.writeString(
-                path,
-                csv,
-                StandardCharsets.UTF_8,
+                path, csv, StandardCharsets.UTF_8,
                 java.nio.file.StandardOpenOption.CREATE,
                 java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
             );
         } catch (Exception e) {
-            System.err.println("writeOutput: error writing file: " + e.getMessage());
+            System.err.println("writeOutput error: " + e.getMessage());
         }
     }
+
 }

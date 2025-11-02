@@ -52,15 +52,18 @@ public class TestUserComputeAPI {
     void compute_badInput_fails() {
         InterComputeAPI inter = mock(InterComputeAPI.class);
         DataComputeAPI data   = mock(DataComputeAPI.class);
-        UserComputeAPI user   = sut(inter, data);
+        UserComputeAPI user   = new UserComputeAPIImpl(inter, data);
 
         ComputeResponse r1 = user.compute(null);
-        ComputeResponse r2 = user.compute(new ComputeRequest(null, "out.csv"));
+
+        DataSource badSrc = () -> { throw new RuntimeException("boom"); };
+        ComputeResponse r2 = user.compute(new ComputeRequest(badSrc, "out.csv"));
 
         assertFalse(r1.isSuccess());
         assertFalse(r2.isSuccess());
         verifyNoInteractions(inter, data);
     }
+
 
     @Test
     void compute_ok_noOut_doesNotWrite() {
