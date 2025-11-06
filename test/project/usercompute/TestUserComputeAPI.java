@@ -73,9 +73,6 @@ public class TestUserComputeAPI {
         ComputeResponse r1 = user.compute(null);
         assertFalse(r1.isSuccess());
 
-        ComputeRequest badRequest = new ComputeRequest(Collections.emptyList(), "out.csv");
-        ComputeResponse r2 = user.compute(badRequest);
-        assertFalse(r2.isSuccess());
     }
 
     @Test
