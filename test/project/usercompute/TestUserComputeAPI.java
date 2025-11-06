@@ -1,22 +1,12 @@
 package project.usercompute;
 
 import org.junit.jupiter.api.Test;
-
 import project.datacompute.DataComputeAPI;
 import project.intercompute.InterComputeAPI;
 import project.intercompute.InterRequest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -31,66 +21,88 @@ public class TestUserComputeAPI {
     }
 
     @Test
-    void handleRequest_callsInter() {
-        InterComputeAPI inter = mock(InterComputeAPI.class);
-        DataComputeAPI data   = mock(DataComputeAPI.class);
-        UserComputeAPI user   = sut(inter, data);
-
-        user.handleRequest(new UserRequest(99));
-
-        verify(inter).processRequest(any(InterRequest.class));
-        verifyNoMoreInteractions(inter);
-        verifyNoInteractions(data);
-    }
-
-    @Test
     void compute_ok_writesOutput() {
-        InterComputeAPI inter = mock(InterComputeAPI.class);
-        DataComputeAPI data   = mock(DataComputeAPI.class);
-        when(inter.processRequest(any(InterRequest.class))).thenReturn(23);
+     
+        InterComputeAPI inter = req -> 23;
 
-        UserComputeAPI user = sut(inter, data);
+        class CapturingData implements DataComputeAPI {
+            List<Integer> written;
+            String path;
 
-        ComputeResponse resp = user.compute(new ComputeRequest(() -> List.of(25), "out.csv"));
+            public void writeOutput(List<Integer> numbers, String outputPath) {
+                this.written = numbers;
+                this.path = outputPath;
+            }
+
+            public List<Integer> readInput(String inputPath) {
+                return List.of();
+            }
+        }
+
+        CapturingData data = new CapturingData();
+        UserComputeAPI user = new UserComputeAPIImpl(inter, data);
+
+        ComputeRequest request = new ComputeRequest(List.of(25), "out.csv");
+        ComputeResponse resp = user.compute(request);
 
         assertTrue(resp.isSuccess());
         assertEquals(23, resp.getResult());
-        verify(inter).processRequest(any(InterRequest.class));
-        verify(data).writeOutput(eq(Collections.singletonList(23)), eq("out.csv"));
-        verifyNoMoreInteractions(inter, data);
+        assertEquals(List.of(23), data.written);
+        assertEquals("out.csv", data.path);
     }
+
 
     @Test
     void compute_badInput_fails() {
-        InterComputeAPI inter = mock(InterComputeAPI.class);
-        DataComputeAPI data   = mock(DataComputeAPI.class);
-        UserComputeAPI user   = new UserComputeAPIImpl(inter, data);
+      
+        InterComputeAPI inter = req -> { 
+        	throw new AssertionError("Should not be called"); };
+
+        class FailOnWrite implements DataComputeAPI {
+            public void writeOutput(List<Integer> numbers, String path) {
+                throw new AssertionError("writeOutput should not be called");
+            }
+
+            public List<Integer> readInput(String path) {
+                throw new AssertionError("readInput should not be called");
+            }
+        }
+
+        UserComputeAPI user = new UserComputeAPIImpl(inter, new FailOnWrite());
 
         ComputeResponse r1 = user.compute(null);
-
-        DataSource badSrc = () -> {
-            throw new RuntimeException("boom");
-        };
-        ComputeResponse r2 = user.compute(new ComputeRequest(badSrc, "out.csv"));
-
         assertFalse(r1.isSuccess());
+
+        ComputeRequest badRequest = new ComputeRequest(Collections.emptyList(), "out.csv");
+        ComputeResponse r2 = user.compute(badRequest);
         assertFalse(r2.isSuccess());
-        verifyNoInteractions(inter, data);
     }
 
     @Test
-    void compute_ok_noOut_doesNotWrite() {
-        InterComputeAPI inter = mock(InterComputeAPI.class);
-        DataComputeAPI data   = mock(DataComputeAPI.class);
-        when(inter.processRequest(any(InterRequest.class))).thenReturn(7);
+    void computeOk_doesNotWrite() {
+        InterComputeAPI inter = req -> -1;  
 
-        UserComputeAPI user = sut(inter, data);
+        class CapturingData implements DataComputeAPI {
+            boolean writeCalled = false;
 
-        ComputeResponse resp = user.compute(new ComputeRequest(() -> List.of(10), null));
+            public void writeOutput(List<Integer> numbers, String path) {
+                writeCalled = true; 
+            }
+
+            public List<Integer> readInput(String inputPath) {
+                return List.of(); 
+            }
+        }
+
+        CapturingData data = new CapturingData();
+        UserComputeAPI user = new UserComputeAPIImpl(inter, data);
+
+        ComputeRequest req = new ComputeRequest(List.of(1), null);
+        ComputeResponse resp = user.compute(req);
 
         assertTrue(resp.isSuccess());
-        assertEquals(7, resp.getResult());
-        verify(inter).processRequest(any(InterRequest.class));
-        verifyNoInteractions(data);
+        assertEquals(-1, resp.getResult());
+        assertFalse(data.writeCalled); 
     }
+
 }
