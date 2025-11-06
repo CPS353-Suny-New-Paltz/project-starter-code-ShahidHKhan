@@ -13,14 +13,14 @@ import project.intercompute.InterComputeAPI;
 import project.intercompute.InterRequest;
 import project.usercompute.ComputeRequest;
 import project.usercompute.ComputeResponse;
-import project.usercompute.DataSource;
 import project.usercompute.UserComputeAPI;
 import project.usercompute.UserComputeAPIImpl;
 
 public class ExceptionHandlingTest {
 
     @Test
-    void userCompute_returnsFail_whenInterThrows_andDoesNotWrite() {
+    void userCompute_returnsFail() {
+    	
         InterComputeAPI inter = new InterComputeAPI() {
             @Override
             public int processRequest(InterRequest req) {
@@ -41,12 +41,12 @@ public class ExceptionHandlingTest {
                 lastWrite = new ArrayList<>(results);
             }
         }
-        CapturingData data = new CapturingData();
 
+        CapturingData data = new CapturingData();
+        
         UserComputeAPI user = new UserComputeAPIImpl(inter, data);
 
-        DataSource src = () -> List.of(5);
-        ComputeRequest req = new ComputeRequest(src, "ignored.csv");
+        ComputeRequest req = new ComputeRequest(List.of(5), "ignored.csv");
 
         ComputeResponse resp = user.compute(req);
 

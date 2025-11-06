@@ -15,7 +15,6 @@ import project.intercompute.InterComputeAPI;
 import project.intercompute.InterComputeAPIImpl;
 import project.usercompute.ComputeRequest;
 import project.usercompute.ComputeResponse;
-import project.usercompute.DataSource;
 import project.usercompute.UserComputeAPI;
 import project.usercompute.UserComputeAPIImpl;
 
@@ -33,13 +32,8 @@ public class ComputeEngineIntegrationTest {
         InterComputeAPI inter = new InterComputeAPIImpl();
         UserComputeAPI user   = new UserComputeAPIImpl(inter, data);
 
-        // DataSource now returns the full list
-        DataSource source = () -> input;
-
-        // Single unified call processes all inputs and writes all outputs
-        ComputeRequest req = new ComputeRequest(source, "ignored");
+        ComputeRequest req = new ComputeRequest(input, "ignored");
         ComputeResponse resp = user.compute(req);
-        // (resp.getResult() is last result; file/sink has all results)
 
         List<Integer> expected = Arrays.asList(
             -1,  // 1 has no prime ≤ 1
