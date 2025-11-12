@@ -1,16 +1,11 @@
 package project.checkpointtests;
 
-import project.datacompute.DataComputeAPI;
 import project.datacompute.DataComputeAPIImpl;
-import project.intercompute.InterComputeAPI;
 import project.intercompute.InterComputeAPIImpl;
-import project.usercompute.UserComputeAPI;
-import project.usercompute.UserComputeAPIImpl;
 import project.usercompute.ComputeRequest;
 import project.usercompute.ComputeResponse;
-
-import java.util.Collections;
-import java.util.List;
+import project.usercompute.UserComputeAPI;
+import project.usercompute.UserComputeAPIImpl;
 
 public class ManualTestingFramework {
 
@@ -18,19 +13,13 @@ public class ManualTestingFramework {
     public static final String OUTPUT = "manualTestOutput.txt";
 
     public static void main(String[] args) {
+        
+        UserComputeAPI user = new UserComputeAPIImpl(
+            new InterComputeAPIImpl(),
+            new DataComputeAPIImpl()
+        );
 
-        DataComputeAPI data = new DataComputeAPIImpl();
-        InterComputeAPI inter = new InterComputeAPIImpl();
-        UserComputeAPI user = new UserComputeAPIImpl(inter, data);
-
-        List<Integer> inputNumbers = data.readInput(INPUT);
-        if (inputNumbers == null || inputNumbers.isEmpty()) {
-            System.err.println("No valid input found.");
-            return;
-        }
-
-        ComputeRequest request = new ComputeRequest(inputNumbers, OUTPUT);
-
+        ComputeRequest request = new ComputeRequest(INPUT, OUTPUT);
         ComputeResponse response = user.compute(request);
 
         System.out.println("Success: " + response.isSuccess() + ", result=" + response.getResult());
