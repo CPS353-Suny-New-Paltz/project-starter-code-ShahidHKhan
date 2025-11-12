@@ -27,7 +27,7 @@ public class UserComputeAPIImpl implements UserComputeAPI {
     @Override
     public ComputeResponse compute(ComputeRequest request) {
         try {
-            if (request == null || request.getNumbers() == null || request.getNumbers().isEmpty()) {
+            if (request == null) {
                 return new ComputeResponse(0, ComputeResponse.Status.FAIL);
             }
 
@@ -35,6 +35,11 @@ public class UserComputeAPIImpl implements UserComputeAPI {
 
             if ((inputs == null || inputs.isEmpty()) && request.getInputPath() != null) {
                 inputs = data.readInput(request.getInputPath());
+            }
+
+            if (inputs == null || inputs.isEmpty()) {
+                System.err.println("UserComputeAPIImpl: No valid input provided.");
+                return new ComputeResponse(0, ComputeResponse.Status.FAIL);
             }
 
             List<Integer> outputs = new ArrayList<>(inputs.size());
@@ -46,7 +51,7 @@ public class UserComputeAPIImpl implements UserComputeAPI {
             }
 
             String outPath = request.getOutputPath();
-            if (outPath != null) {
+            if (outPath != null && !outPath.isBlank()) {
                 data.writeOutput(outputs, outPath);
             }
 
@@ -58,4 +63,3 @@ public class UserComputeAPIImpl implements UserComputeAPI {
         }
     }
 }
-
