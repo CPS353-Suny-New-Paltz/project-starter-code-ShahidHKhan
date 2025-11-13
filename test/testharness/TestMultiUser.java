@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -47,7 +48,7 @@ public class TestMultiUser {
             testUsers.add(new TestUser(coordinator));
         }
 
-        // Run single threaded
+        // Run single-threaded
         String singleThreadFilePrefix = "testMultiUser.compareMultiAndSingleThreaded.test.singleThreadOut.tmp";
         for (int i = 0; i < numThreads; i++) {
             File singleThreadedOut = new File(singleThreadFilePrefix + i);
@@ -55,25 +56,32 @@ public class TestMultiUser {
             testUsers.get(i).run(singleThreadedOut.getCanonicalPath());
         }
 
-        // Run multi threaded
+        // Run multi-threaded
         ExecutorService threadPool = Executors.newCachedThreadPool();
         List<Future<?>> results = new ArrayList<>();
         String multiThreadFilePrefix = "testMultiUser.compareMultiAndSingleThreaded.test.multiThreadOut.tmp";
+
         for (int i = 0; i < numThreads; i++) {
-            File multiThreadedOut = new File(multiThreadFilePrefix + i);
-            multiThreadedOut.deleteOnExit();
-            String multiThreadOutputPath = multiThreadedOut.getCanonicalPath();
-            TestUser testUser = testUsers.get(i);
-            results.add(threadPool.submit(() -> testUser.run(multiThreadOutputPath)));
+            final String multiThreadOutputPath = new File(multiThreadFilePrefix + i).getCanonicalPath();
+            final TestUser testUser = testUsers.get(i);
+
+            Callable<Void> task = new Callable<Void>() {
+                @Override
+                public Void call() {
+                    testUser.run(multiThreadOutputPath);
+                    return null;
+                }
+            };
+            results.add(threadPool.submit(task));
         }
 
-        results.forEach(future -> {
+        for (int i = 0; i < results.size(); i++) {
             try {
-                future.get();
+                results.get(i).get();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        });
+        }
 
         List<String> singleThreaded = loadAllOutput(singleThreadFilePrefix, numThreads);
         List<String> multiThreaded = loadAllOutput(multiThreadFilePrefix, numThreads);
@@ -91,7 +99,11 @@ public class TestMultiUser {
 
     @Test
     public void smokeTest() {
-        List<String> requests = List.of("test1", "test2", "test3");
+        List<String> requests = new ArrayList<>();
+        requests.add("test1");
+        requests.add("test2");
+        requests.add("test3");
+
         List<String> results = networkAPI.processRequests(requests);
         Assertions.assertEquals(requests.size(), results.size());
     }
