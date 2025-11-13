@@ -2,7 +2,10 @@ package project.networkcompute;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MultithreadedNetworkAPI {
 
@@ -16,8 +19,14 @@ public class MultithreadedNetworkAPI {
     public List<String> processRequests(List<String> requests) {
         List<Future<String>> futures = new ArrayList<>();
 
-        for (String request : requests) {
-            futures.add(executor.submit(() -> "processed:" + request));
+        for (final String request : requests) {
+            Callable<String> task = new Callable<String>() {
+                @Override
+                public String call() {
+                    return "processed:" + request;
+                }
+            };
+            futures.add(executor.submit(task));
         }
 
         List<String> results = new ArrayList<>();
