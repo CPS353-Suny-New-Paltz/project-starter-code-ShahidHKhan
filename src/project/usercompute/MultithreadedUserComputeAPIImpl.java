@@ -5,9 +5,11 @@ import project.intercompute.InterRequest;
 import project.datacompute.DataComputeAPI;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MultithreadedUserComputeAPIImpl implements UserComputeAPI {
 
@@ -38,14 +40,23 @@ public class MultithreadedUserComputeAPIImpl implements UserComputeAPI {
             }
 
             if (inputs == null || inputs.isEmpty()) {
-                System.err.println("UserComputeAPIImpl: No valid input provided.");
+                System.err.println("MultithreadedUserComputeAPIImpl: No valid input provided.");
                 return new ComputeResponse(0, ComputeResponse.Status.FAIL);
             }
 
             List<Future<Integer>> futures = new ArrayList<>();
-            for (Integer n : inputs) {
-                int value = (n == null) ? -1 : n;
-                futures.add(executor.submit(() -> inter.processRequest(new InterRequest(value))));
+
+            for (final Integer n : inputs) {
+                final int value = (n == null) ? -1 : n;
+
+                Callable<Integer> task = new Callable<Integer>() {
+                    @Override
+                    public Integer call() {
+                        return inter.processRequest(new InterRequest(value));
+                    }
+                };
+
+                futures.add(executor.submit(task));
             }
 
             List<Integer> outputs = new ArrayList<>();
@@ -57,7 +68,10 @@ public class MultithreadedUserComputeAPIImpl implements UserComputeAPI {
                 data.writeOutput(outputs, request.getOutputPath());
             }
 
-            return new ComputeResponse(outputs.get(outputs.size() - 1), ComputeResponse.Status.SUCCESS);
+            return new ComputeResponse(
+                    outputs.get(outputs.size() - 1),
+                    ComputeResponse.Status.SUCCESS
+            );
 
         } catch (Exception e) {
             System.err.println("MultithreadedUserComputeAPIImpl.compute error: " + e.getMessage());
