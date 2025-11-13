@@ -4,3 +4,5 @@ The System will find the largest prime number in n (input)
 EX: 10:7 (as 7 is the largest prime in 10)
 
 (https://github.com/CPS353-Suny-New-Paltz/project-starter-code-ShahidHKhan/blob/main/CPS353_checkpoint2_APIs.png?raw=true)
+
+For Checkpoint6, i implemented a multi-threaded version of my @NetworkAPI using Executors.newFixedThreadPool with upper bound of 4 threads; ensuring that no more than 4 tasks run at onces.
