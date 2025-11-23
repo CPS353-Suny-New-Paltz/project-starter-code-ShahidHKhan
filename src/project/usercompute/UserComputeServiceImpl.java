@@ -10,7 +10,8 @@ import project.usercompute.UserComputeApi.UserComputeResponseProto;
 
 import project.intercompute.InterComputeAPIImpl;
 import project.intercompute.InterComputeAPI;
-import project.datacompute.DataComputeAPIImpl;
+
+import project.datacompute.DataComputeGrpcClient;
 import project.datacompute.DataComputeAPI;
 
 public class UserComputeServiceImpl extends UserComputeServiceImplBase {
@@ -18,9 +19,10 @@ public class UserComputeServiceImpl extends UserComputeServiceImplBase {
     private final MultithreadedUserComputeAPIImpl engine;
 
     public UserComputeServiceImpl() {
-        // Wire dependencies normally
+
         InterComputeAPI inter = new InterComputeAPIImpl();
-        DataComputeAPI data = new DataComputeAPIImpl();
+
+        DataComputeAPI data = new DataComputeGrpcClient("localhost", 60051);
 
         this.engine = new MultithreadedUserComputeAPIImpl(inter, data);
     }
@@ -31,24 +33,19 @@ public class UserComputeServiceImpl extends UserComputeServiceImplBase {
             StreamObserver<UserComputeResponseProto> responseObserver) {
 
         try {
-
             ComputeRequest internal = convertToInternal(request);
-
-
             ComputeResponse result = engine.compute(internal);
 
-
-            UserComputeResponseProto.Builder builder = UserComputeResponseProto.newBuilder()
-                    .setSuccess(result.getStatus() == ComputeResponse.Status.SUCCESS)
-                    .setMessage(result.getStatus().toString());
+            UserComputeResponseProto.Builder builder =
+                    UserComputeResponseProto.newBuilder()
+                            .setSuccess(result.getStatus() == ComputeResponse.Status.SUCCESS)
+                            .setMessage(result.getStatus().toString());
 
             if (request.hasOutputFile()) {
                 builder.setOutputFile(request.getOutputFile());
             }
 
-            UserComputeResponseProto response = builder.build();
-
-            responseObserver.onNext(response);
+            responseObserver.onNext(builder.build());
             responseObserver.onCompleted();
 
         } catch (Exception e) {
@@ -66,15 +63,12 @@ public class UserComputeServiceImpl extends UserComputeServiceImplBase {
 
         boolean hasInline = req.getInlineNumbersCount() > 0;
         boolean hasInputFile = req.hasInputFile();
-
         String output = req.hasOutputFile() ? req.getOutputFile() : null;
 
         if (hasInline) {
-
-            List<Integer> ints =
-                    req.getInlineNumbersList().stream()
-                            .map(d -> (int) d.doubleValue())
-                            .toList();
+            List<Integer> ints = req.getInlineNumbersList().stream()
+                    .map(d -> (int) d.doubleValue())
+                    .toList();
 
             return new ComputeRequest(ints, output);
         }
@@ -85,5 +79,4 @@ public class UserComputeServiceImpl extends UserComputeServiceImplBase {
 
         throw new IllegalArgumentException("Request must contain either inline numbers or an input file.");
     }
-
 }
