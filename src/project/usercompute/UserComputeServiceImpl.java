@@ -32,19 +32,24 @@ public class UserComputeServiceImpl extends UserComputeServiceImplBase {
             StreamObserver<UserComputeResponseProto> responseObserver) {
 
         try {
+
             ComputeRequest internal = convertToInternal(request);
+
+
             ComputeResponse result = engine.compute(internal);
 
-            UserComputeResponseProto.Builder builder =
-                    UserComputeResponseProto.newBuilder()
-                            .setSuccess(result.getStatus() == ComputeResponse.Status.SUCCESS)
-                            .setMessage(result.getStatus().toString());
+
+            UserComputeResponseProto.Builder builder = UserComputeResponseProto.newBuilder()
+                    .setSuccess(result.getStatus() == ComputeResponse.Status.SUCCESS)
+                    .setMessage(result.getStatus().toString());
 
             if (request.hasOutputFile()) {
                 builder.setOutputFile(request.getOutputFile());
             }
 
-            responseObserver.onNext(builder.build());
+            UserComputeResponseProto response = builder.build();
+
+            responseObserver.onNext(response);
             responseObserver.onCompleted();
 
         } catch (Exception e) {
@@ -62,12 +67,15 @@ public class UserComputeServiceImpl extends UserComputeServiceImplBase {
 
         boolean hasInline = req.getInlineNumbersCount() > 0;
         boolean hasInputFile = req.hasInputFile();
+
         String output = req.hasOutputFile() ? req.getOutputFile() : null;
 
         if (hasInline) {
-            List<Integer> ints = req.getInlineNumbersList().stream()
-                    .map(d -> (int) d.doubleValue())
-                    .toList();
+
+            List<Integer> ints =
+                    req.getInlineNumbersList().stream()
+                            .map(d -> (int) d.doubleValue())
+                            .toList();
 
             return new ComputeRequest(ints, output);
         }
@@ -78,4 +86,5 @@ public class UserComputeServiceImpl extends UserComputeServiceImplBase {
 
         throw new IllegalArgumentException("Request must contain either inline numbers or an input file.");
     }
+
 }
