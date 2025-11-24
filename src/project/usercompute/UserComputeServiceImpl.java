@@ -3,10 +3,9 @@ package project.usercompute;
 import java.util.List;
 
 import io.grpc.stub.StreamObserver;
-import project.usercompute.UserComputeServiceGrpc.UserComputeServiceImplBase;
-
-import project.usercompute.UserComputeApi.UserComputeRequestProto;
-import project.usercompute.UserComputeApi.UserComputeResponseProto;
+import project.usercompute.proto.UserComputeServiceGrpc.UserComputeServiceImplBase;
+import project.usercompute.proto.UserComputeApi.UserComputeRequestProto;
+import project.usercompute.proto.UserComputeApi.UserComputeResponseProto;
 
 import project.intercompute.InterComputeAPIImpl;
 import project.intercompute.InterComputeAPI;

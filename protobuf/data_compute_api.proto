@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package project.datacompute;
+package project.datacompute.proto;
 
 service DataComputeService {
   rpc ReadInput (ReadInputRequest) returns (ReadInputResponse);

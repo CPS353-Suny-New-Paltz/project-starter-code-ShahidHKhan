@@ -1,15 +1,16 @@
 package project.datacompute;
 
-import io.grpc.stub.StreamObserver;
-import project.datacompute.DataComputeApi.ReadInputRequest;
-import project.datacompute.DataComputeApi.ReadInputResponse;
-import project.datacompute.DataComputeApi.WriteOutputRequest;
-import project.datacompute.DataComputeApi.WriteOutputResponse;
-
+import project.datacompute.proto.DataComputeApi.ReadInputRequest;
+import project.datacompute.proto.DataComputeApi.ReadInputResponse;
+import project.datacompute.proto.DataComputeApi.WriteOutputRequest;
+import project.datacompute.proto.DataComputeApi.WriteOutputResponse;
+import project.datacompute.proto.DataComputeServiceGrpc;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.grpc.stub.StreamObserver;
 
 public class DataComputeServiceImpl extends DataComputeServiceGrpc.DataComputeServiceImplBase {
 

@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package project.usercompute;
+package project.usercompute.proto;
 
 // Versioning is good practice for persistence / BC
 message UserComputeRequestProto {

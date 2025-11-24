@@ -13,12 +13,14 @@ public class DataComputeServer {
                 .build()
                 .start();
 
-        System.out.println("DataComputeServer started on port " + port);
+        System.out.println("datastore server: " + port);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 DataComputeServer.this.stop();
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                e.printStackTrace();   // ✔ no more empty catch block
+            }
         }));
     }
 

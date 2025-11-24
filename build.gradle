@@ -58,6 +58,10 @@ protobuf {
     }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    dependsOn tasks.withType(com.google.protobuf.gradle.GenerateProtoTask)
+}
+
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testImplementation 'org.mockito:mockito-core:5.10.0'

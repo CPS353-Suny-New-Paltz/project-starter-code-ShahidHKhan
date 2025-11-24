@@ -2,11 +2,11 @@ package project.datacompute;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import project.datacompute.DataComputeApi.ReadInputRequest;
-import project.datacompute.DataComputeApi.ReadInputResponse;
-import project.datacompute.DataComputeApi.WriteOutputRequest;
-import project.datacompute.DataComputeApi.WriteOutputResponse;
-
+import project.datacompute.proto.DataComputeApi.ReadInputRequest;
+import project.datacompute.proto.DataComputeApi.ReadInputResponse;
+import project.datacompute.proto.DataComputeApi.WriteOutputRequest;
+import project.datacompute.proto.DataComputeApi.WriteOutputResponse;
+import project.datacompute.proto.DataComputeServiceGrpc;
 import java.util.List;
 
 public class DataComputeGrpcClient implements DataComputeAPI {

@@ -3,9 +3,10 @@ package project.usercompute;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
-import project.usercompute.UserComputeApi.UserComputeRequestProto;
-import project.usercompute.UserComputeApi.UserComputeResponseProto;
-import project.usercompute.UserComputeServiceGrpc;
+import project.usercompute.proto.UserComputeApi.UserComputeRequestProto;
+import project.usercompute.proto.UserComputeApi.UserComputeResponseProto;
+import project.usercompute.proto.UserComputeServiceGrpc;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +31,14 @@ public class UserComputeClient {
             String[] parts = scanner.nextLine().trim().split("\\s+");
 
             List<Double> nums = new ArrayList<>();
-            for (String p : parts) nums.add(Double.parseDouble(p));
+            for (String p : parts) {
+                nums.add(Double.parseDouble(p));
+            }
 
             reqBuilder.addAllInlineNumbers(nums);
-        }
-        // file input
-        else if (choice == 2) {
+
+        } else if (choice == 2) {
+            // file input
             System.out.print("in file: ");
             reqBuilder.setInputFile(scanner.nextLine().trim());
         }
@@ -46,8 +49,10 @@ public class UserComputeClient {
 
         // delimiter (optional)
         System.out.print("delim: ");
-        String d = scanner.nextLine().trim();
-        if (!d.isBlank()) reqBuilder.setDelimiter(d);
+        String delimiter = scanner.nextLine().trim();
+        if (!delimiter.isBlank()) {
+            reqBuilder.setDelimiter(delimiter);
+        }
 
         // connect
         ManagedChannel channel = ManagedChannelBuilder
@@ -63,7 +68,9 @@ public class UserComputeClient {
 
         System.out.println("ok: " + res.getSuccess());
         System.out.println("msg: " + res.getMessage());
-        if (res.hasOutputFile()) System.out.println("out: " + res.getOutputFile());
+        if (res.hasOutputFile()) {
+            System.out.println("out: " + res.getOutputFile());
+        }
 
         channel.shutdown();
         System.out.println("done");
