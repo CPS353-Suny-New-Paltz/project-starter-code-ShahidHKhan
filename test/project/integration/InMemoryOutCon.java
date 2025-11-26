@@ -1,5 +1,6 @@
 package project.integration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryOutCon {
@@ -10,11 +11,15 @@ public class InMemoryOutCon {
         this.out = out;
     }
 
+    public InMemoryOutCon() {
+        this.out = new ArrayList<>();
+    }
+
     public void write(Integer n) {
         out.add(n);
     }
 
-    public List<Integer> getOut() {
+    public List<Integer> getInts() {
         return out;
     }
 }
