@@ -19,25 +19,29 @@ public class BenchmarkInterComputeTest {
 	}
 
 
-    @Test
-    void fastVersionIsAtLeast10PercentFaster() {
-        InterComputeAPI original = new InterComputeAPIImpl();
-        InterComputeAPI fast = new FastInterComputeAPIImpl();
+	@Test
+	void fastVersionIsAtLeast10PercentFaster() {
+	    InterComputeAPI original = new InterComputeAPIImpl();
+	    InterComputeAPI fast = new FastInterComputeAPIImpl();
 
-        int testValue = 100_000;  // large enough to measure difference
+	    int testInput = 100_000;
 
-        long originalTime = benchmark(original, testValue);
-        long fastTime = benchmark(fast, testValue);
+	    long originalMin = Long.MAX_VALUE;
+	    long fastMin = Long.MAX_VALUE;
 
-        System.out.println("Original: " + originalTime + " ns");
-        System.out.println("Fast: " + fastTime + " ns");
+	    for (int i = 0; i < 10; i++) {
+	        originalMin = Math.min(originalMin, benchmark(original, testInput));
+	        fastMin = Math.min(fastMin, benchmark(fast, testInput));
+	    }
 
-        //fast version must be >=10% faster
-        assertTrue(
-            fastTime <= originalTime * 0.90,
-            "Fast version must be at least 10% faster.\n" +
-            "Original: " + originalTime + " ns\n" +
-            "Fast: " + fastTime + " ns\n"
-        );
-    }
+	    System.out.println("Original BEST ns: " + originalMin);
+	    System.out.println("Fast BEST ns: " + fastMin);
+
+	    assertTrue(
+	        fastMin <= originalMin * 0.90,
+	        "Fast version must be >=10% faster.\nOriginal: "
+	            + originalMin + " ns\nFast: " + fastMin + " ns"
+	    );
+	}
+
 }
