@@ -7,8 +7,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
+import javax.swing.UIManager;
 
-import java.awt.GridLayout;
+import java.awt.Font;
+import java.awt.Dimension;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -20,11 +25,13 @@ import project.intercompute.FastInterComputeAPIImpl;
 import project.intercompute.InterComputeAPI;
 import project.intercompute.InterRequest;
 
-//loads SWING
 public class SwingPrimeClient extends JFrame {
 
-	//creates an instance of my computeengine that gui will call
     private final InterComputeAPI engine = new FastInterComputeAPIImpl();
+
+    private static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 18);
+    private static final Font LABEL_FONT = new Font("SansSerif", Font.PLAIN, 16);
+    private static final Font BUTTON_FONT = new Font("SansSerif", Font.BOLD, 16);
 
     private JTextField inlineInputField;
     private JLabel inlineResultLabel;
@@ -40,32 +47,63 @@ public class SwingPrimeClient extends JFrame {
     public SwingPrimeClient() {
         super("Compute Engine Client");
 
-        // constructor
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ignored) {}
+
         JTabbedPane tabs = new JTabbedPane();
         tabs.add("Inline Input", createInlinePanel());
         tabs.add("File Input/Output", createFilePanel());
 
         add(tabs);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 300);
+        setSize(600, 350);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
     private JPanel createInlinePanel() {
-        JPanel panel = new JPanel(new GridLayout(5, 1, 8, 8));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        JLabel title = new JLabel("Inline Prime Computation");
+        title.setFont(TITLE_FONT);
+        title.setAlignmentX(CENTER_ALIGNMENT);
+
+        JLabel prompt = new JLabel("Enter a number:");
+        prompt.setFont(LABEL_FONT);
+        prompt.setAlignmentX(CENTER_ALIGNMENT);
 
         inlineInputField = new JTextField();
-        inlineResultLabel = new JLabel("Result: ");
-        inlineStatusLabel = new JLabel("Status: Ready");
+        inlineInputField.setFont(LABEL_FONT);
+        inlineInputField.setMaximumSize(new Dimension(300, 30));
 
         JButton computeButton = new JButton("Compute");
+        computeButton.setFont(BUTTON_FONT);
+        computeButton.setPreferredSize(new Dimension(150, 40));
+        computeButton.setMaximumSize(new Dimension(200, 40));
+        computeButton.setAlignmentX(CENTER_ALIGNMENT);
         computeButton.addActionListener(e -> runInlineCompute());
 
-        panel.add(new JLabel("Enter a number:"));
+        inlineResultLabel = new JLabel("Result:");
+        inlineResultLabel.setFont(LABEL_FONT);
+        inlineResultLabel.setAlignmentX(CENTER_ALIGNMENT);
+
+        inlineStatusLabel = new JLabel("Status: Ready");
+        inlineStatusLabel.setFont(LABEL_FONT);
+        inlineStatusLabel.setAlignmentX(CENTER_ALIGNMENT);
+
+        panel.add(title);
+        panel.add(Box.createVerticalStrut(12));
+        panel.add(prompt);
+        panel.add(Box.createVerticalStrut(6));
         panel.add(inlineInputField);
+        panel.add(Box.createVerticalStrut(12));
         panel.add(computeButton);
+        panel.add(Box.createVerticalStrut(12));
         panel.add(inlineResultLabel);
+        panel.add(Box.createVerticalStrut(4));
         panel.add(inlineStatusLabel);
 
         return panel;
@@ -73,7 +111,6 @@ public class SwingPrimeClient extends JFrame {
 
     private void runInlineCompute() {
         try {
-        	//running a SINGLE compute request (inline)
             int n = Integer.parseInt(inlineInputField.getText().trim());
             int result = engine.processRequest(new InterRequest(n));
 
@@ -88,34 +125,62 @@ public class SwingPrimeClient extends JFrame {
         }
     }
 
-    //this is the file handling, that will take in files and print files
     private JPanel createFilePanel() {
-        JPanel panel = new JPanel(new GridLayout(6, 1, 8, 8));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        JLabel title = new JLabel("File-Based Prime Computation");
+        title.setFont(TITLE_FONT);
+        title.setAlignmentX(CENTER_ALIGNMENT);
 
         JButton chooseInputBtn = new JButton("Choose Input File");
+        chooseInputBtn.setFont(BUTTON_FONT);
+        chooseInputBtn.setAlignmentX(CENTER_ALIGNMENT);
+        chooseInputBtn.setMaximumSize(new Dimension(250, 40));
         chooseInputBtn.addActionListener(e -> chooseInputFile());
 
+        fileInputLabel = new JLabel("Input File: (none)");
+        fileInputLabel.setFont(LABEL_FONT);
+        fileInputLabel.setAlignmentX(CENTER_ALIGNMENT);
+
         JButton chooseOutputBtn = new JButton("Choose Output File");
+        chooseOutputBtn.setFont(BUTTON_FONT);
+        chooseOutputBtn.setAlignmentX(CENTER_ALIGNMENT);
+        chooseOutputBtn.setMaximumSize(new Dimension(250, 40));
         chooseOutputBtn.addActionListener(e -> chooseOutputFile());
 
+        fileOutputLabel = new JLabel("Output File: (none)");
+        fileOutputLabel.setFont(LABEL_FONT);
+        fileOutputLabel.setAlignmentX(CENTER_ALIGNMENT);
+
         JButton runJobBtn = new JButton("Run Job");
+        runJobBtn.setFont(BUTTON_FONT);
+        runJobBtn.setAlignmentX(CENTER_ALIGNMENT);
+        runJobBtn.setMaximumSize(new Dimension(200, 45));
         runJobBtn.addActionListener(e -> runFileJob());
 
-        fileInputLabel = new JLabel("Input File: (none)");
-        fileOutputLabel = new JLabel("Output File: (none)");
         fileStatusLabel = new JLabel("Status: Waiting");
+        fileStatusLabel.setFont(LABEL_FONT);
+        fileStatusLabel.setAlignmentX(CENTER_ALIGNMENT);
 
+        panel.add(title);
+        panel.add(Box.createVerticalStrut(15));
         panel.add(chooseInputBtn);
+        panel.add(Box.createVerticalStrut(6));
         panel.add(fileInputLabel);
+        panel.add(Box.createVerticalStrut(12));
         panel.add(chooseOutputBtn);
+        panel.add(Box.createVerticalStrut(6));
         panel.add(fileOutputLabel);
+        panel.add(Box.createVerticalStrut(15));
         panel.add(runJobBtn);
+        panel.add(Box.createVerticalStrut(12));
         panel.add(fileStatusLabel);
 
         return panel;
     }
 
-    //chooser logic
     private void chooseInputFile() {
         JFileChooser chooser = new JFileChooser();
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -148,8 +213,7 @@ public class SwingPrimeClient extends JFrame {
 
             List<Integer> outputs = new ArrayList<>();
             for (int n : nums) {
-                int result = engine.processRequest(new InterRequest(n));
-                outputs.add(result);
+                outputs.add(engine.processRequest(new InterRequest(n)));
             }
 
             List<String> outLines = outputs.stream()
@@ -157,17 +221,12 @@ public class SwingPrimeClient extends JFrame {
                     .toList();
             Files.write(outputFile.toPath(), outLines);
 
-            fileStatusLabel.setText("Status: Job complete. " +
-                    outputs.size() + " results written.");
-
-        } catch (NumberFormatException ex) {
-            fileStatusLabel.setText("Status: Error - invalid number in input file.");
+            fileStatusLabel.setText("Status: Job complete. " + outputs.size() + " results written.");
         } catch (Exception ex) {
             fileStatusLabel.setText("Status: Error - " + ex.getMessage());
         }
     }
 
-    //main method for EVERYTHING
     public static void main(String[] args) {
         new SwingPrimeClient();
     }
