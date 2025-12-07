@@ -49,8 +49,9 @@ public class SwingPrimeClient extends JFrame {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ignored) {}
-
+        } catch (Exception e) {
+            // Look and feel could not be set; using default.
+        }
         JTabbedPane tabs = new JTabbedPane();
         tabs.add("Inline Input", createInlinePanel());
         tabs.add("File Input/Output", createFilePanel());
