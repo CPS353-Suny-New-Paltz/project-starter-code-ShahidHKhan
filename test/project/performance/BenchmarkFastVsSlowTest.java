@@ -5,7 +5,10 @@ import org.junit.jupiter.api.Test;
 import project.datacompute.DataComputeAPIImpl;
 import project.intercompute.InterComputeAPIImpl;
 import project.intercompute.FastInterComputeAPIImpl;
-import project.usercompute.*;
+import project.usercompute.ComputeRequest;
+import project.usercompute.ComputeResponse;
+import project.usercompute.UserComputeAPI;
+import project.usercompute.UserComputeAPIImpl;
 
 import java.util.List;
 
@@ -65,8 +68,8 @@ public class BenchmarkFastVsSlowTest {
             totalFast += (endFast - startFast);
         }
 
-        long avgSlow = totalSlow / timedRuns;
-        long avgFast = totalFast / timedRuns;
+        long avgSlow = (totalSlow / timedRuns);
+        long avgFast = (totalFast / timedRuns);
 
         System.out.println("Average SLOW time (ns) = " + avgSlow);
         System.out.println("Average FAST time (ns) = " + avgFast);
