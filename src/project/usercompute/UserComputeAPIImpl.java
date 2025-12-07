@@ -1,8 +1,6 @@
 package project.usercompute;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import project.datacompute.DataComputeAPI;
 import project.intercompute.InterComputeAPI;
@@ -21,7 +19,7 @@ public class UserComputeAPIImpl implements UserComputeAPI {
             throw new IllegalArgumentException("DataComputeAPI cannot be null.");
         }
         this.inter = inter;
-        this.data  = data;
+        this.data = data;
     }
 
     @Override
@@ -31,9 +29,11 @@ public class UserComputeAPIImpl implements UserComputeAPI {
                 return new ComputeResponse(0, ComputeResponse.Status.FAIL);
             }
 
-            List<Integer> inputs = request.getNumbers();
+            List<Integer> inputs = null;
 
-            if ((inputs == null || inputs.isEmpty()) && request.getInputPath() != null) {
+            if (request.getNumbers() != null && !request.getNumbers().isEmpty()) {
+                inputs = request.getNumbers();
+            } else if (request.getInputPath() != null && !request.getInputPath().isBlank()) {
                 inputs = data.readInput(request.getInputPath());
             }
 
@@ -42,20 +42,24 @@ public class UserComputeAPIImpl implements UserComputeAPI {
                 return new ComputeResponse(0, ComputeResponse.Status.FAIL);
             }
 
-            List<Integer> outputs = new ArrayList<>(inputs.size());
-
+            List<Integer> outputs = new java.util.ArrayList<>(inputs.size());
             for (Integer n : inputs) {
-                int val = (n == null) ? -1 : n.intValue();
-                int result = inter.processRequest(new InterRequest(val));
+                if (n == null) {
+                    outputs.add(-1);
+                    continue;
+                }
+                int result = inter.processRequest(new InterRequest(n));
                 outputs.add(result);
             }
 
-            String outPath = request.getOutputPath();
-            if (outPath != null && !outPath.isBlank()) {
-                data.writeOutput(outputs, outPath);
+            if (request.getOutputPath() != null && !request.getOutputPath().isBlank()) {
+                data.writeOutput(outputs, request.getOutputPath());
             }
 
-            return new ComputeResponse(outputs.get(outputs.size() - 1), ComputeResponse.Status.SUCCESS);
+            return new ComputeResponse(
+                outputs.get(outputs.size() - 1),
+                ComputeResponse.Status.SUCCESS
+            );
 
         } catch (Exception e) {
             System.err.println("UserComputeAPIImpl.compute error: " + e.getMessage());
