@@ -31,23 +31,17 @@ public class UserComputeAPIImpl implements UserComputeAPI {
 
             List<Integer> inputs = null;
 
-            // case 1, #s were already parsed
             if (request.getNumbers() != null && !request.getNumbers().isEmpty()) {
                 inputs = request.getNumbers();
-            }
-
-            // case 2, only a path was provided → use DataComputeAPI to parse file
-            else if (request.getInputPath() != null && !request.getInputPath().isBlank()) {
+            } else if (request.getInputPath() != null && !request.getInputPath().isBlank()) {
                 inputs = data.readInput(request.getInputPath());
             }
 
-            // No valid input found
             if (inputs == null || inputs.isEmpty()) {
                 System.err.println("UserComputeAPIImpl: No valid input provided.");
                 return new ComputeResponse(0, ComputeResponse.Status.FAIL);
             }
 
-            // Process each integer using InterComputeAPI
             List<Integer> outputs = new java.util.ArrayList<>(inputs.size());
             for (Integer n : inputs) {
                 if (n == null) {
@@ -72,5 +66,4 @@ public class UserComputeAPIImpl implements UserComputeAPI {
             return new ComputeResponse(0, ComputeResponse.Status.FAIL);
         }
     }
-
 }
